@@ -1,0 +1,90 @@
+
+
+		ENHANCED MEMORY MANAGEMENT SYSTEM REVISION 0.4.0
+		------------------------------------------------
+
+			(C) 2002-2005 by Jari Tuominen
+
+X. Index
+--------
+
+X. INDEX
+1. INTRODUCTION
+2. SUGGESTED MEMORY CONFIGURATION
+3. HOW IT WORKS
+
+
+1. Introduction
+---------------
+
+From the since from the beginning of the JTMOS memory management
+system development, different kinds of approaches have been tested
+to  handle the memory allocation. So far for example the linked
+list method have been proven rather vulnarable to malfunctioning
+because even the smallest problem in the linked list could lead
+into total crash of the entire operating system, therefore it is
+highly recommended that memory management system design is now
+being looked from a different kind of view. In this view I would
+like to seperate the memory area and the allocation system database
+totally from each other, this will secure much better reliability,
+also now as there is two seperate areas(data and database),
+it is possible to create different kind of tables to speed up
+the actual allocation process also.
+This kind of approach is also very benefitical for the future
+implementation of the paging in the JTMOS operating system.
+
+
+2. Suggested memory configuration
+---------------------------------
+
+Allocation database is always located after
+the actual memory data space,
+in following way:
+
++---------------+---------------------------------------+
+|(OFFSET)	|(DESCRIPTION)				|
++---------------+---------------------------------------+
+|(First MB.)	|For kernel critical data and code.	|
++---------------+---------------------------------------+
+|00000000       |MEMORY START.				|
+|00010000	|512K KERNEL BINARY.			|
++---------------+---------------------------------------+
+|(Second MB and so on, is for various other data.)	|
++---------------+---------------------------------------+
+|00100000	|KERNEL NON-STATIC DATA AREA.		|
+|00200000(*)	|BEGINNING OF THE DYNAMICALLY		|
+|		|ALLOCTIONABLE MEMORY REGION.		|
+|(Rest of RAM)	|MEMORY MANAGEMENT DATABASE AT		|
+|		|THE END OF THE KERNEL MEMORY.		|
++---------------+---------------------------------------+
+
+
+3. How it works
+---------------
+
+The memory management system uses a special free memory bitmap.
+This bitmap is used in finding free memory regions on
+allocation system memory space. Upon deallocation and/or
+allocation of a certain memory area, the memory management
+system updates the area in the free memory bitmap and simply
+removes the entry from the list of allocated memory entries.
+
+Concepts 1:
+- free memory bitmap
+- list of allocated memory entries
+
+The free memory bitmap is based on a format that is optimal
+for the memory paging system. A single bit in the free
+memory bitmap represents a single four kilobyte chunk of memory.
+Note that four kilobyte is exactly the standard page size in
+the IA32 paging implementation.
+
+Concepts 2:
+- 1 bit in the free memory bitmap
+  represents a single 4K chunk of RAM
+- A standard page size for IA32 based
+  systems is also 4K
+
+
+
+

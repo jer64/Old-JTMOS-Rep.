@@ -1,0 +1,4 @@
+//              p[i] = ad | 2;
+//      p[0] = page_table;
+//      p[0] |= 3; // supervisor,rw,present (011)
+
