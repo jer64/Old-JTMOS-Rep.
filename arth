@@ -1,0 +1,6 @@
+#!/bin/bash
+mkdir /tmp/__sqathis
+cp $1 /tmp/__sqathis
+sqarc /tmp/__sqathis > $1.img
+rm -rf /tmp/__sqathis
+
