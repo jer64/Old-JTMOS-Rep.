@@ -1,0 +1,29 @@
+; ==========================================================
+; Silly corner indicator routine, used for ISR debugging,
+; to see whether if it was the specified ISR that jammed up.
+; New: New debugging feature for debugging IRQs.
+; (C) 2002-2003 by Jari Tuominen(jari.tuominen@kanetti.net)
+; ==========================================================
+extern irqActive
+
+%macro CornerIndicator 2
+			push ebp
+			push eax
+			push ebx
+                        mov ebp,0xb8000+(80*2)
+                        mov ax,0x10
+                        mov ds,ax
+			mov al,%2
+			cmp al,32
+			jne %%.n32
+			mov bl,%1
+			mov byte [ds:irqActive],bl
+%%.n32:
+		;	mov byte [ds:ebp+0+%1],al
+			mov al,0x1e
+		;	mov byte [ds:ebp+1+%1],al
+			pop ebx
+			pop eax
+			pop ebp
+%endmacro
+

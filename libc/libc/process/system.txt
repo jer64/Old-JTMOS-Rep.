@@ -1,0 +1,80 @@
+// Execute program and search it from various paths.
+// Note: Waits until command is done.
+int system(const char *_cmd)
+{
+	char *p,*s,*e,*es;
+	int i,i2,i3,i4,ii,l,ll;
+	char str[100],cmd[100];
+	int r;
+
+	//
+	if(_cmd==NULL)return 1;
+
+	// Get name
+	ll = strlen(_cmd);
+	for(i=0; i<ll; i++)
+	{
+		if(_cmd[i]==' ')break;
+		str[i] = _cmd[i];
+	}
+	str[i]=0;
+	l = strlen(str);
+
+	// Add extension when needed
+	if( strchr(str, '.')==NULL )
+	{
+		strcat(str, JTMOS_EXE_FMT);
+	}
+
+	// Get new file name + merge rest
+	// [exe.bin]_[arguments]
+	// exe
+	strcpy(cmd, str);
+	// arguments
+	strcat(cmd, _cmd+l);
+
+	//
+//	printf("LAUNCH '%s'\n", cmd);
+
+	// Search through all adviced paths
+	es = SysSearchPath; es+=strlen(SysSearchPath);
+	for(ii=0,r=1,p=SysSearchPath; p<es; ii++)
+	{
+		// Get character
+		for(i=0; *p!=';' && *p && i<95; p++,i++) { str[i]=*p; } str[i]=0;
+		if(!i || !*p)break;
+		p++;
+//		printf("TRYING PATH '%s' FOR FILE '%s'\n", str, cmd);
+		// cmd = exe+args, str=run path location
+		if( !_system(cmd, str) ){r=0; break;}
+	}
+//	printf("DONE\n");
+	return r;
+}
+
+//
+int _system(const char *cmd, const char *path)
+{
+	char tmp[100];
+	int pid,rv;
+
+	// Set return value to zero
+	rv=0;
+
+	// Save current working directory
+	getcwd(tmp, 99);
+
+	//
+	chdir(path);
+	pid = cexec(cmd, tmp);
+	if(pid==-1)	{ rv=1; goto skipWait; }
+	if(!pid)	goto skipWait;
+
+	// Wait until process exits.
+	WaitProcessTermination(pid);
+
+skipWait:
+	// Change back to old dir.
+	chdir(tmp);
+	return rv;
+}

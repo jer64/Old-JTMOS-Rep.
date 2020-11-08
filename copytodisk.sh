@@ -1,0 +1,3 @@
+#!/bin/sh
+echo Copying to diskette ...
+cp jtm32.img /dev/fd0

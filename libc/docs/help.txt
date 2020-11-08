@@ -1,0 +1,15 @@
+System Maintenance Shell - Shell Manual
+(C) 2002-2003 by Jari Tuominen
+
+[Command name] | Description
+---------------+-------------------------------------
+ls             | Lists directory
+rm             | Remove file(s)
+reboot         | Reboot machine
+clear          | Clears screen
+version        | Display Shell version message
+h              | Write files, example:
+               | h duck 1 10  (writes 10 duck* files
+               | with size of 1 blocks)
+cd             | Change directory
+[drive]:       | Change drive(same as cd hda)

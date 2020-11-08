@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+# Mass search and replace.
+$REPFROM=	"ExitThrood";
+$REPTO=		"ExitThread";
+
+# Gather list.
+system "find . \|grep \"\\.c\" \> rep.tmp";
+system "find . \|grep \"\\.h\" \>> rep.tmp";
+
+# Chop lines.
+open(f, "rep.tmp");
+@lines = <f>;
+for($i=0; $i<$#lines; $i++)
+{
+	chop $lines[$i];
+}
+close(f);
+
+# Run replace on all of these.
+for($i=0; $i<$#lines; $i++)
+{
+	system "replace $REPFROM $REPTO $lines[$i]";
+}
+

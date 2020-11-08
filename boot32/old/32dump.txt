@@ -1,0 +1,11 @@
+        ;
+        mov esi,0x10000
+        mov edi,0xb8000
+        mov cx,80*25
+looppi1:
+        mov al,byte [ds:esi]
+        mov byte [ds:edi],al
+        add esi,2
+        add edi,2
+        dec cx
+        jnz looppi1

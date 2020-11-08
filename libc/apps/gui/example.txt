@@ -1,0 +1,24 @@
+/*
+ * void DrawBitmap16(WORD *buf,long width,long height,BYTE bpp,
+ *                   WORD *srcbuf,long s_width,long s_height,BYTE *pal,
+ *                   long target_x,    long target_y,
+ *                   long wanted_width,long wanted_height,
+ *                   long source_x,    long source_y,
+ *                   DWORD rgb)
+ *
+ * Note: if rgb is zero, it will be not used nor the shadow will be paint
+ *
+ * Examples:
+ *
+ *  //
+ *  DrawText16(buf,width,height,bpp,
+ *             "HELLO SOLIDARIC WORLD",MAPVIEW_ADJUST_X+8,8,
+ *             sol.font[0],2048,32,
+ *             0x000001);
+ *  DrawText16(buf,width,height,bpp,
+ *             "HELLO SOLIDARIC WORLD",MAPVIEW_ADJUST_X+8,8+64,
+ *             sol.font[1],1024,16,
+ *             0x000000);
+ *
+ */
+

@@ -1,0 +1,14 @@
+Welcome to The JTMOS Operating System.
+
+Currently there is not much to see here.
+You may press ctrl+x to exit this notepad program.
+
+JTMOS is an operating system project, created
+entirely by Jari Tuominen, who also works as an
+editor-in-chief on Vaihtoehtouutiset -news agency.
+
+See for more information:
+http://vunet.org
+
+Thank you for your interest.
+

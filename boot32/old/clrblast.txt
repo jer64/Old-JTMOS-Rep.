@@ -1,0 +1,20 @@
+        ; put some marks on the middle of the left topmost corner of the screen
+        mov di,0
+        mov ax,0xb800
+        mov es,ax
+        mov al,'>'
+        mov cx,25
+        mov bp,0
+looppi2:
+        mov si,0
+        mov dx,160
+looppi:
+        mov byte [es:di+bp],al
+        inc bp
+        dec dx
+        jnz looppi
+
+        inc al
+
+        dec cx
+        jnz looppi2

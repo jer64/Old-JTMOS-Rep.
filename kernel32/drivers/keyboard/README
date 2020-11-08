@@ -1,0 +1,28 @@
+JTMOS KEYBOARD DRIVER
+---------------------
+
+(C) 2002-2005 by Jari Tuominen.
+
+scantoasc.c			Contains f.e. the CTRL+ALT+DEL
+				handler code.
+
+keyb.c				Keyboard IRQ handler,
+				etc. hardware init, etc. functions.
+
+keybISR.asm			Contains the most low level
+				keyboard handling code.
+				Low level keyboard
+				interrupt handler.
+
+
+
+"In order to avoid interference between scancode sequences or
+mouse packets and the reponses given to commands, the 
+keyboard or mouse should always be disabled before giving
+a command that requires a response, and probably enabled 
+afterwards. Some keyboards or mice do the disable automatically
+in this situation, but still require an explicit enable 
+afterwards."
+
+http://www.win.tue.nl/~aeb/linux/kbd/scancodes-11.html
+

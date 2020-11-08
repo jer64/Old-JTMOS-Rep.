@@ -1,0 +1,27 @@
+Simulated JTMOS Kernel
+======================
+
+(C) 2008 by Jari Tuominen (jari.t.tuominen@gmail.com).
+
+This subproject of JTMOS aims to create testing a platform of
+all key modules included in the JTMOS kernel.
+
+ACCELERATION OF DEVELOPMENT
+
+The purpose of this project is to accelerate development of the key modules
+of the JTMOS kernel by developing those outside the JTMOS Host Operating System,
+thus enabling the development of the kernel outside itself.
+
+HOST OPERATING SYSTEMS
+
+Currently the only testing host operating system supported is Debian Etch Linux,
+others may or may not work.
+
+PRIORITIES
+
+First priority is to make the JTMOS File System (JTMFS) function with it.
+
+SIMULATED DEVAPI
+
+A simulated DEVAPI will provide access to a simulated ramdisk and
+a simulated hard disk drive that resides in a single file.

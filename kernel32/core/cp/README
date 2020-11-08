@@ -1,0 +1,23 @@
+
+KINIT: JTMOS PROCESS LAUNCHER/CREATOR PROCESS
+---------------------------------------------
+
+init/keropt.c contains options concerning
+default amount of RAM allocated per application.
+
+07/2003: Added unique PID support.
+09/2003: Unique ID support was disabled, since
+it didn't work quite the way it was designed.
+Now for a few months a different kind of PID
+rolling mechanism is working, that ensures
+that recently terminated process ID won't be
+reused too quickly.
+
+Although there still might be some reasons to
+improve further this PID rolling mechanism.
+One idea would be to increase the total amount
+of max. processes from 256 to 512 or 1024.
+
+This issue is considered "TODO".
+
+

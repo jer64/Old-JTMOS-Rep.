@@ -1,0 +1,3 @@
+%macro tihandler 1
+		mov ax,%1
+%endmacro

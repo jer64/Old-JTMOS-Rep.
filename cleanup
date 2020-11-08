@@ -1,0 +1,21 @@
+#!/bin/bash
+find . -name \*.o |xargs rm
+find . -name \*.bin |xargs rm
+rm -f tools/*.img
+rm jtm32.img
+rm JTMOSDISK2.img
+
+cd libc
+cd libc
+make clean
+cd ..
+cd ..
+cd kernel32
+make clean
+cd ..
+cd boot32
+make clean
+cd ..
+cd imgsrc
+make clean
+cd ..

@@ -1,0 +1,565 @@
+**********************************************************
+*							 *
+* JTMOS - Operating System Development Project - History *
+*							 *
+**********************************************************
+
+Programmed by Jari Tuominen,
+lots code has been borrowed from others.
+You can spread this work under license of GPL,
+see more information at COPYING text file.
+
+Mail me any questions at:
+jari2vunet.org
+
+
+xx.xx.1997
+-------------------------------------
+16-bit JTMOS development starts
+GUI programmed, but it had too many
+basic design failures that it doesn't
+have got any usage now.
+
+
+xx.xx.1999
+-------------------------------------
+32-bit JTMOS development starts
+
+
+
+20.11.2000
+-------------------------------------
+I am hard working on interrupt system
+to make it work properly, I think it
+is a quite realistic idea to do in
+this very moment.
+
+12.05.2001
+-------------------------------------
+Fixed many things, f.e. :
+
+- Made makefiles for everything,
+make clean, etc. basics should work
+- Cleaned up some code
+- Been coding some LDT/TSS things,
+but with lack of success so far
+
+20.05.2001
+-------------------------------------
+Fixed man ythings, f.e. :
+
+- Creating directory actually works now
+- jtmfs.c is now called ramdisk.c,
+  makes it more clear, after all
+  jtmfs.c was a ramdisk all the time
+- Fixed annoying bug that keyboard leds
+  setting on some computers might hang
+  the entire keyboard
+
+Next up I am going to make filecreation,
+file/dir chaining work, I will probably
+put a picture on a ramdisk,
+write it on the floppy, it should be 
+loaded in the memory at the beginning
+of JTMOS boot, of course in kernel mode.
+After loading ramdisk in memory,
+the kernel will load the picture and
+show it. I am sure all this will
+be quite impressive!
+
+30.06.2001
+-------------------------------------
+I am reorganizing now the whole kernel,
+I created various directories where
+I categorized all the source codes.
+I am currently designing the file API
+for JTMOS, which allows any block device
+to be used with any file system
+(gives great advantage of flexibility).
+
+22.10.2001
+--------------------------------------
+I made some fixes in the archiving progress
+being made by arc -script,
+now names the .tar.gz files with date.
+
+04.11.2001
+--------------------------------------
+Added a PS/2 mouse driver, still working
+on it to make it work properly.
+PS/2 mouse works through the same
+keyboard controller chip as keyboard
+does, so this makes it easy to confuse
+the keyboard meanwhile working with
+the PS/2 mouse...
+
+I rewrote the whole keyboard driver.
+
+Problem:
+
+Bootloader had problems of loading large
+images properly into memory.
+
+Fixed: 
+Now the bootloader loads each of
+the block from the disk to a certain
+"buffer region", which is always properly
+accessible by DMA, after every ready,
+the sector will be copied to it's proper
+location.
+
+Problem:
+loader didn't have a checksum check
+
+Fixed:
+bootloader has now a checksum value of
+the kernel, it generates a similiar
+checksum value out of the kernel data
+it loaded, compares these, and lets
+the kernel to run if the checksums match.
+
+10.12.2001
+--------------------------------------
+Development of FILEAPI, JTMFS, JTMFAT,
+and others in progress.
+FILEAPI provides functions like:
+- open,close
+- get,put
+- remove
+- mountroot, umountroot
+
+13.12.2001
+--------------------------------------
+Following things have been done:
+
+- Fixed JTMFS/JTMFAT abit, now the fat
+free block search is much faster.
+- Creation of file works now better,
+allocation of data chain to a file/dir
+works now well initially,
+deletion of a file and it's possible
+data chain is being made successfully.
+
+Things I probably will have to do next:
+
+- FILEAPI needs a mountroot and
+umountroot
+- FILEAPI needs open,close,get,put,remove,
+and etc functions
+
+ROOTDEVICE:
+	|
+	ROOTDIR
+	|      \
+	SUBDIR1 \
+		 SUBDIR2
+
+15.12.2001
+----------------------------------------
+FILEAPI now supports simple mount, and
+umount for root device.
+
+18.12.2001
+----------------------------------------
+DEVAPI now comes with read/write cache
+for ReadBlock and WriteBlock -functions.
+ReadBlock1 and WriteBlock1 provide access
+that is cache free, although much slower.
+Therefore as caching is feature FlushCahe
+will be called before
+system_reset -function.
+The default size for the cache is around
+500 kilobytes.
+Therefore the kernel still runs on systems
+even with as little as 4 megabytes of RAM.
+
+22.12.2001
+----------------------------------------
+Added multiprocessing ability, kernel
+can now run multiple kernel level processes,
+great job.
+
+// EXAMPLE OF CREATING PROCESSES
+DWORD handle,handle2;
+char *pr_stack,*pr_stack2;
+
+pr_stack=malloc(1024*16);
+pr_stack2=malloc(1024*16);
+
+disable();
+handle=new_task();
+set_task(handle,pr_stack+(1024*16-1),
+	syssh_DummyProcess);
+handle2=new_task();
+set_task(handle2,pr_stack2+(1024*16-1),
+	syssh_DummyProcess2);
+enable();
+
+
+26.12.2001
+------------------------------------
+Seperated the thread handling code
+from the timer code, replaced most of
+the unstable assembly language code
+with stable C code.
+Now thread management is much more
+realer than what it was before,
+f.e. function:
+
+idle_moment();
+
+allows time to be given to other
+processes, when the current thread
+is not doing anything,
+functions like f.e. getch()
+implement this.
+
+idle_moment(); actually calls
+the system call #1.
+
+So far, it has been proven that
+the system call is now working as
+well.
+
+17.01.2002
+-----------------------------------
+Multithreading is now being applied
+quite widely.
+
+The kernel has as a default atleast
+following threads running:
+
+init
+IdleThread
+cachefl
+shell
+
+There is some problems with the thread's
+CPU time saving routines:
+- idle_moment(formely also used
+as relax_thread,
+   but nowadays obsolete)
+idle_moment is just like relax_thread
+but it is actually a system_call caller
+code that calls the system call of
+relax_thread to make the relax_thread
+function. This procedure automatically
+switches off all the interrupts, which
+protects any conflicts from being happended.
+
+I noticed some problems when running
+"ps" -command multiple times, approximately
+10-20 times averagely, it'll cause
+a segmentation fault, which will either
+kill the shell or application. I believe
+more likely the application(PID5 at the
+testing moment)
+
+xxxx other PIDs
+PID4 shell's PID
+PID5 application's PID
+xxxx more possible PIDs
+
+In addition all this, I also isolated
+the functions in syssh.c to
+syssh_applications.c and
+syssh_applications2.c.
+Although syssh_applications2.c mostly
+contain only the newly added
+internal(built-in) commands.
+
+Exception handling is now somewhat
+more sophisticated, it will kill the process
+and wait for user to hit ESC when he/she
+wishes to continue. The present exception
+is not very advanced, still though it shows
+which process(PID) caused the exception.
+In future I could possibly add a PID to
+process name string conversion, which
+would, undoubtly make it more clearer
+which process the PID covers.
+
+
+24.01.2002
+----------------------------------------------
+Creation of virtual memory spaces for all
+threads is a failure so far.
+I have noticed that there is major problems
+in the interrupt handler routine,
+f.e. it does not restore a stack that
+could be useful when the application
+gained from interrupted thread is not usable.
+So, interrupt handler will now from now on
+always use the kernel mode data segment for
+DS/ES/FS/GS/SS segment selector registers.
+
+
+02.02.2002
+-----------------------------------------------
+Applications should be soon running.
+Alot things done, too much to mention here.
+Basically most of the changes are made around
+the thread management/low level scheduling code,
+threads now can have real own virtual spaces,
+although a single thread virtual memory is limited
+to 64K minimum, so every thread with own memory
+space will ultimately take over 64K of ram.
+Added libc build option to the main Makefile.
+
+18.04.2002
+-----------------------------------------------
+After a couple months of spending time on other
+projects, I have finally decided to continue
+JTMOS project alittle. Of course that is
+happending by borrowing time from my other
+projects such as my DirectX game, known as 
+"Desert Breeze".
+
+First of all, to all that text above, according
+to last two updates JTMOS should be running
+applications at their own memory spaces.
+Too bad the reality is not that bright at all,
+the memory system is currently totally misfunctioning.
+Well, what now concreting on, is the file system.
+Since the multitasking works, I can now
+concrete on making the file system and other
+kernel heart functions work right with
+the multitasking.
+
+Currently executing the "testwrite" internal
+shell command will cause the jtmos to lock up.
+Well, it will do something silly,
+the name of the currently selected device will
+be messed up with extra character(s).
+I believe this has something to do with
+the incompatibility of multitasking and
+buffer flushing problems.
+
+15.05.2002
+----------------------------------------------
+First application based shell is running.
+Making argc/argv to work with application
+shell.
+
+29.05.2002
+----------------------------------------------
+Following things have been improved/added:
+
+- MAJOR problem in JTMFS and JTMFAT has been
+solved, this problem caused f.e. file system
+to malfunction in a very lousy way.
+It is no more a major problem.
+- Serial COM port driver is now able to
+send and receive data without any known problems
+- SLIP serial line internet protocol driver is
+now included as a part of the device drivers,
+and is programmed according to
+the RFC specification
+- Now each process has own command line with
+possible arguments, and so on. This makes
+it possible to determine the argc/argv from
+it, f.e. LIBC desperately has been needing
+this in order to provide a standard platform
+to program on for C programmers.
+
+15.09.2002
+----------------------------------------------
+Note about VMware:
+Go to VMware machine's BIOS & remove the write-back
+cache for HDs(if the write-back cache is enabled).
+JTMOS _does not_ work well with write-back cache yet.
+
+External program launching is now working
+somewhat better.
+
+I have been running two smsh -shells
+simulatneously, and is working averagely well.
+
+I added a new device called sys:, it points to
+the system utilities file system on the system
+boot disk.
+
+1440K JTMOS SYSTEM BOOT DISK:
+- 640K bootsector & kernel image
+- 800K system utilities file system
+
+16.09.2002
+----------------------------------------------
+tools/utilsdisk.img is now featured in the sys:
+section of the boot floppy: disk.
+This allows e.g. following operation to be made:
+chdev hda
+sqdsk.bin sys:
+^^ This operation will extract the latest utilities
+for JTMOS that came within the system boot disk.
+
+However, in future it is planed that the sys:
+section will contain a file system(JTMFS32)
+with the utilities, however in this state of
+development, it is not yet wise to do so,
+because the utilities are still far from
+usable. But progress is being made all
+the time, I estimate that JTMOS will be a
+very usable operating system before year
+2003, this includes basic usabality level
+of MSDOS, internet access(TCP/IP, serslip).
+
+20.10.2002
+----------------------------------------------
+JTMOS is now running TCP/IP stack called uIP.
+SLIP works, SLIP login works, HTTPD & TELNETD-
+services also work pretty nicely.
+I fixed a major jamming bug, which jammed
+the kernel at each boot up.
+I also made a fix at most of the ISR routines,
+which makes JTMOS much stabler, yet so JTMOS
+requires alot work, of course.
+But JTMOS feels now MUCH stabler than before.
+No more annoying crashes that much as before.
+After all JTMOS works as a WEB server,
+that's something, very nice in my opinion.
+
+There is other things that I made, but too
+long to mention right now, maybe I'll write
+up a bigger list of updates later.
+
+6.11.2002
+----------------------------------------------
+Serial mouse support has been added,
+it supports serial mouses on ports COM1
+and COM2.
+
+29.12.2002
+----------------------------------------------
+
+Various things have been achieved. E.g. file
+system is now significantly faster.
+Directories now work better. There's less memory
+usage.
+
+Problems which remain are:
+- Concurrency problems:
+no multitasking shall happend durring block
+device driver operations, therefore the driver
+SHALL NOT use idle_moment. Multitasking supporting
+code should be let in the place as an option still.
+Drivers should work in both "safe mode" and in 
+multitasking mode, if not both, then atleast in
+safe mode, when interrupts are disabled entirely,
+and e.g. no idle_moment or such task scheduling
+functions shall be called.
+- Slow memory allocation system(kmalloc),
+in fact, one of the greatest performance increase
+in the file system was gained from modifying
+the file system code so that it does not use
+memory allocation, except on cases which it is
+really important and no other options are,
+and where it does not significantly decrease
+the file system performance.
+
+
+31.12.2002
+-------------------------------------------------
+Fixed a serious bug in kernel dynamic memory
+allocation system, that was a quick patch,
+a permanent fix will come later.
+Now the system boots up with system boot disk
+and requests for a root disk.
+JTMOS now supports upto 375M IDE HD disks.
+Detection is extended from IDE0/MASTER to
+both IDE0/MASTER and IDE0/SLAVE.
+Currently JTMOS kernel requires 32M RAM memory
+to run properly, although 64M or more RAM
+would be prefered.
+Huge usage of RAM is one of the smaller
+problems in the kernel currently, that will
+be eventually fixed later.
+
+30.04.2003
+-------------------------------------------------
+- major bug fixes in all around the system
+- application launching has been rewritten
+(init process/kernel threads)
+- kernel memory manager has been improved
+- Old LIBC memory manager has been placed with
+a QuickFit algorithm based allocation system
+(highly reliable dyn. mem. al.sys.)
+  FTP Site:
+/anonymous@ftp.cs.colorado.edu:pub/cs/misc/qf.c
+  Contact Person: Dirk Grunwald
+(grunwald@cs.colorado.edu)
+- a lock up bug in keyboard driver has been fixed
+- bwbasic -basic interpret is now shipping with
+JTMOS utilities disk
+- OS primary utilities, upto 800K of uncomprsesed
+collection of executable files, have been put
+on same disk as the boot disk, therefore there
+is no need for two system disks necessarily.
+- System utilities are being extracted upon
+start up
+- JTMOS now requires atleast 64M of ram to run,
+this is temporary requirement, the real requirement
+will be around 32M.
+
+25.06.2003
+-------------------------------------------------
+
+Many updates have been done. In fact, history log
+have been alittle outdated all the time.
+
+27.08.2003
+-------------------------------------------------
+Currently fixing file system access.
+It's both buggy and slow.
+But it's still better than ever before:
+RAM: drive transfers 300-1200K/s
+RX: [remote] drive transfers ~30-100K/s
+HDA: transfers ~30K/s
+
+02.09.2003
+-------------------------------------------------
+A major bug was solved in Flex FAT system.
+FAT table cache buffer was allocated to ownership
+of an application, and after the application
+was terminated, the FAT table also was deallocated,
+but FAT system still continued to implement the memory
+at the table's memory region it known well.
+This problem was fixed by putting all dynamic
+memory allocated by the Flex FAT to ownership of
+PID0. PID0 (the first process) is known as
+"KSTART" (kernel start), it does own quite alot of
+important pieces of memory, it is not possible to
+terminate this process, and even if it would be,
+it would lead into immediate system instability.
+The KSTART process consists merely of a looping
+code, which does not do nothing, although it serves
+an important part when the system is initialized,
+it does all the initializations in the beginning.
+
+Added protection from termination to certain system
+processes.
+
+18.02.2004
+=================================================
+
+The floppy disk driver has a known bug.
+It does not work with older FDC controllers.
+I try a hack to fix it, simply by disabling
+reset for old FDCs.
+
+
+21.01.2008
+=================================================
+
+Support for partition table has been added.
+
+Legacy Serial port routines have been fixed.
+
+Virtual terminal code has been seperated from
+EGA text mode driver.
+
+Windows Sound System driver has been added.
+
+Support for FAT12/16 file systems are in plan.
+
+

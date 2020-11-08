@@ -1,0 +1,3 @@
+/pipe		interprocess communication (IPC) directory
+/dev/fd0	floppy drive #1
+/dev/hd		hard disk drive

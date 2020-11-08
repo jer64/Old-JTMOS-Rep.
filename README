@@ -1,0 +1,72 @@
+
+       J T M O S  OPERATING SYSTEM  SQUIRREL PRE-ALPHA
+===============================================================
+
+		 .    .     _ _   
+		 |\__/|  .~    ~.
+		 /  o `./      .' 
+		{o__,   \    {   
+		  / .  . )    \  
+		  `-` '-' \    } 
+		 .(   _(   )_.'  
+		'---.~_ _ _|     
+	   __ ______ _   _ _____ _____
+	   __   __   __ __ __ __ __ __
+	   __   __   _____ __ __ ___ 
+	__ __   __   __ __ __ __   ___
+	__ __   __   __ __ __ __ __ __
+	_____   __   __ __ _____ _____
+
+	O P E R A T I N G  S Y S T E M
+
+	(C) 1997-2017,18,19 by Jari Tuominen (jari.t.tuominen@gmail.com).
+	Special thanks to Michai Ramakers(Mic42)
+	for assisting in programming
+	and in supplying hardware.
+
+	See file LICENSE for more copyright details
+
+	JTMOS DOES NOT WORK YET.
+	CURRENT RELEASE IS:
+	UNSTABLE, PRE-ALPHA.
+
+	JTMOS consists of over 100,000
+	lines of C code. It is hard to
+	maintain, debug - making it stable
+	will take estimately from one year
+	to many years still.
+
+===============================================================================
+
+INTRODUCTION
+
+Welcome to The JTMOS, we aim to create a fully functional, flexible,
+UN*X alike operating system, that can execute simple tasks, binary
+executables, scripts, etc. It will support some basic hardware, like f.e.
+standard PC keyboard, VGA graphics adapter,
+sound(Sound Blaster), mouse(PS/2), FDC floppy disk drives and IDE HDs.
+JTMOS might not be yet very much an operating system, but it is understable,
+since we are still in quite the beginning, but however, we have achieved many
+things we never couldn't even have dreamed of at the time of when we had
+began in this project. We look with alot of hope and braveness at the future.
+
+Currently dynamic kernel memory allocation system(KDMAS) is alittle inefficient,
+therefore it also slows down many parts of the system that relies on it.
+Some TODOs:
+- Optimize file system.
+- Optimize remote device driver access.
+- Try not to write code which frequently requires KDMAS's services.
+- Make multiple file operations possible to be done at once, instead
+of doing one queued work at once only.
+
+Internet features are being improved, e.g. slip works.
+Read file 'INSTALL' -for a start up guide.
+
+Note: Much of the documentation is outdated because the project evolves
+way faster than the documentation.
+
+Jari Tuominen
+Project Chief
+
+
+

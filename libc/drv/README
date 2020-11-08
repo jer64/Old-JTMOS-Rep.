@@ -1,0 +1,7 @@
+This is a JTMOS external drivers folder.
+
+hd/	IDE hard disk driver
+ram/	RAM disk driver
+slip/	SLIP protocol driver
+tcp/	TCP/IP stack driver
+

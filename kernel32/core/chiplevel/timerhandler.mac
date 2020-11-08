@@ -1,0 +1,240 @@
+; ------------------------------------------------------------------
+; MULTI-USAGE LOW LEVEL TASK SWITCHER / SCHEDULER(PIT BASED)
+; ==========================================================
+;
+; (C) 2002-2004 by Jari Tuominen(jari.tuominen@kanetti.fi).
+;
+; Converted parts of ASM code to C for easier fixing.
+;
+; This function switches to next thread.
+; Parameters entered to the macro define it's behaviour.
+; The reason why a macro, is that it makes code much more
+; cleaner and easier to read & understand.
+;
+; 1: Name of the function
+; 2: Name of the user handler routine, e.g. pit_handler(C based)
+; 3: Force switch enabler,	1=enabled, works as immediate switch
+;				0=means works as regular scheduler
+; See segreg.mac for storesegregs & restoresegregs
+;-------------------------------------------------------------------
+%include "core/lowlevel/corner.mac"
+extern schedSleepSwitch
+extern forceSwitch
+extern scheduleNextThread
+extern IRQStatusCritical
+extern defter
+extern stack_violation
+extern ExitThread
+extern storeTSS
+extern restoreTSS
+extern NESTEDTASK
+extern CLEARNT
+extern SETUPTR
+extern tssNextThread
+extern unbusyTSS
+extern runPitHandlers
+extern pg_enable
+global tswitch
+global taskSwitchNr
+%define TSSSEL_OFFS     0x100
+
+
+%macro poppi 1
+		mov eax,0
+		pop ax
+		push ax
+		pop %1
+%endmacro
+
+
+%macro okstack 0
+		mov ax,0x10
+		mov ss,ax
+		mov ds,ax
+		mov es,ax
+		mov esi,esp
+		mov esp,junkstack
+%endmacro
+
+%macro TiHandler 3
+%1:
+		; 
+		cli	; Disable interrupts
+		cld	; Clear direction flag
+		pushad	; Push all general registers
+		; Push all segment registers
+		push ds
+		push es
+		push fs
+		push gs
+		; Get valid segment,
+		; kernel mode, can access
+		; entire memory space.
+		; Used only temporarily.
+		; (CODE32,DATA32 => 0x08,0x10)
+		mov ax,0x10
+		mov ds,ax
+		mov es,ax
+		mov fs,ax
+		mov gs,ax
+
+
+		; DEBUG TRACER FOR HDCACHE:
+		call runPitHandlers
+
+
+		;--------------------------------------------
+		; Increase task switch tick
+		inc dword [taskSwitchNr]
+
+		;--------------------------------------------
+		; Can access kernel memory from here on:
+		;
+
+;-----------------------------------------------------------------
+; End of preparations section
+;-----------------------------------------------------------------
+                ; If we are a forceswitcher -function
+                ; then go to switch code
+                mov eax,%3
+                cmp eax,0
+                je  .nofsw
+		; Switch immediatly(idle_moment):
+		call schedSleepSwitch
+		jmp .past1
+.nofsw:
+		; Switch according scheduling:
+		; Call C based scheduler mechanism
+		call scheduleNextThread
+.past1:
+
+		;
+		; Call C based handler if needed
+%if %2!=0
+		call %2
+%endif
+
+
+		;-----------------------------------------------------------
+		; Setup thread data
+		call unbusyTSS ; set TSS in tasks.task[X] as non-busy
+		call tssNextThread
+
+		; ==========================================================
+		; Cause task switch to next task
+		mov ax,word [nr_curthread]
+		shl ax,3 ; x8
+		add ax,TSSSEL_OFFS
+		call tswitch
+
+		;-----------------------------------------------------------
+		; Signal that we are ready
+%if %2!=0
+		mov dx,0x20
+		mov al,0x20
+		out dx,al
+%endif
+
+		; Pull back.
+		poppi gs
+		poppi fs
+		poppi es
+		poppi ds
+		;
+		popad
+		;
+		iret
+
+; --- OLD PULL BACK ----
+;		; Pull back
+;		;
+;		nop
+;		nop
+;		pop gs
+;		pop fs
+;		pop es
+;		pop ds
+;		;
+;		popad
+;		;
+;		iret
+;---------------------------------------
+
+%endmacro
+
+;-------------------------------------------------------------------------
+tswitch:
+		mov word [ds:xsegm],ax
+
+		; FPU fix for TSS switching:
+		clts
+
+		; JMP XX:YY
+		db 0xEA, 0x00, 0x00, 0x00, 0x00
+xsegm:		dw 0
+		ret
+;-------------------------------------------------------------------------
+
+
+;======================================================
+
+DoSomething:
+		mov edi,0xB8000
+		inc byte [ds:edi+0]
+		inc byte [ds:edi+2]
+		inc byte [ds:edi+4]
+		inc byte [ds:edi+6]
+		ret
+
+
+error1:
+		okstack
+	;	call defter
+	;	call IRQStatusCritical
+		call stack_violation
+		jmp ExitThread
+		okstack
+		call defter
+		call IRQStatusCritical
+		sti
+		; TODO? call syssh_eps
+error1loop:
+		mov dx,0x3C8
+		mov al,0
+		out dx,al
+		inc bl
+		mov al,bl
+		inc dx
+		out dx,al
+		xor al,0xFF
+		out dx,al
+		add al,0x80
+		out dx,al
+		jmp error1loop
+
+error2:
+		okstack
+	;	call defter
+	;	call IRQStatusCritical
+		call stack_violation
+		jmp ExitThread
+		sti
+		; TODO NEEDED? call syssh_eps
+error2loop:
+		mov dx,0x3C8
+		mov al,7
+		out dx,al
+		inc bl
+		mov al,bl
+		inc dx
+		out dx,al
+		xor al,0xFF
+		out dx,al
+		add al,0x80
+		out dx,al
+		jmp error2loop
+
+
+
+taskSwitchNr	dd 0
+

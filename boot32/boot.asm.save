@@ -1,0 +1,111 @@
+;32bit JTMOS boot sector by Jr1 7p1o 7u0m1n3n
+;Radically modified and converted from double segment version to COM stylish
+;single segment executable.
+[bits 16]
+org 0x100 ; 'COM file' start address (Yes, this is [.COM] file actually).
+%include "bios.mac" ;;;; (puts,putchar)
+%include "bootmod.inc" ;;;; Boot Module (Calls BIOS to read rest of boot+krn)
+jmp start ; Jump to PMODE initialization code.
+%include "seg.mac" ;;;; Segment Descriptor Macros
+%include "text.inc" ;;;; Any text things bootsector code needs
+%include "a20.inc" ;;;; A20 line setup code
+;----------------------------------------------------------------------------
+code16  dw 0
+;----------------------------------------------------------------------------
+; main procedure, this is the entry point
+start:
+        ;Kill floppy motor
+        mov dx,0x3f2
+        mov al,0
+        out dx,al
+
+
+        ; Begin protected mode setup code ...
+	mov	ax,cs		; load code-segment into DS and ES
+	mov	ds,ax
+	mov	es,ax
+
+        mov     ax,cs                  ; get '32-bit' code segment into AX
+	movzx	eax,ax		; clear high word
+	shl	eax,4		; make a physical address
+        add     eax,dummy_descriptor ; calculate physical address of GDT
+        mov     dword [ds:gdt_start+2],eax
+
+        mov     ax,cs                  ; get '32-bit' code segment into AX
+	movzx	eax,ax		; clear high word
+	shl	eax,4		; make a physical address
+        add     eax,interrupt_0  ; calculate physical address of IDT
+        mov     dword [ds:idt_start+2],eax
+
+
+
+        ;
+        call a20
+
+
+        ; Load descriptor tables
+        cli
+        lgdt    [dword global_descriptor_table]
+        lidt    [dword interrupt_descriptor_table]
+        ; Enter protected mode
+        mov     eax,cr0
+        or      al,1
+        mov     cr0,eax
+
+
+
+        ;
+        ;***************************************************
+        ; ENTER KERNEL32
+        ; 
+        ; Setup protected mode stack.
+        mov esp,0x7000
+        mov ax,0x18
+        mov ss,ax
+        ; Also define rest of the segments, just to prevent
+        ; additional errors occuring.
+        mov ds,ax
+        mov es,ax
+        mov fs,ax
+        mov gs,ax
+
+        ;
+        ; Jump ssss:oooooooo, 16:32, segment:offset.
+        db 0x66,0xea
+        dd 0x00010000
+        dw code32_idx
+;        db      0eah            ; opcode for far jump (to set CS correctly)
+;        dw      0x10000,code32_idx
+
+
+;----------------------------------------------------------------------------
+
+global_descriptor_table:     ; here begins the GDT
+;
+gdt_start:        dw                 gdt_size,0,0            ; val for GDT reg
+;
+gdtoff:
+segdes dummy_descriptor,0xffff,0,0,0x9a,0xcf,0
+segdes code32_descriptor,0xffff,0,0,0x9a,0xcf,0
+segdes data32_descriptor,0xffff,0,0,0x92,0xcf,0
+segdes core32_descriptor,0xffff,0,0,0x92,0xcf,0
+segdes code16_descriptor,0xffff,0,0,0x9a,0,0
+segdes data16_descriptor,0xffff,0,0,0x92,0,0
+
+gdt_size equ $-(dummy_descriptor)
+
+code32_idx      equ   0x08              ; offset of 32-bit code segment in GDT
+data32_idx      equ   0x10              ; offset of 32-bit data segment in GDT
+core32_idx      equ   0x18              ; offset of 32-bit core segment in GDT
+
+interrupt_descriptor_table: ;*** here begins the IDT ***;
+
+idt_start:      dw                      idt_size,0,0
+intdes interrupt_0,demo_int,code32_idx,0,0x8e,0
+
+idt_size equ $-(interrupt_0)
+
+;----------------------------------------------------------------------------
+demo_int:
+	iretd
+;----------------------------------------------------------------------------

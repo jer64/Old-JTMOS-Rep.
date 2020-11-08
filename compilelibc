@@ -1,0 +1,19 @@
+#!/bin/bash
+# Go to LIBC dir
+cd libc
+
+# BUILD LIBC
+cd libc
+make
+# BUILD HEADERS
+make headers
+cd ..
+
+# BUILD APPLICATIONS
+cd apps
+make
+cd ..
+
+# Back ...
+cd ..
+

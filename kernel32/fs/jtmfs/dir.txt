@@ -1,0 +1,168 @@
+// dir function (ls)
+// -----------------
+//
+// This function outputs directory from specified block(linear) to stdout.
+int jtmfs_dir(int device_nr, int which)
+{
+	//
+	unsigned char *buf,*p;
+	unsigned short int *wp;
+	unsigned long int *dwp,i,i2,i3,i4,ii,ii2,ii3,ii4,l;
+	JTMFS_FILE_ENTRY *fe;
+	int k;
+	DWORD ad;
+	long current_block;
+	char *str,*str2,*res1,*res2;
+	int totalBytes,totalFiles,totalDirs;
+
+	//
+	jtmfat_chdev(device_nr);
+ 
+	// (TODO: add a device_nr validity check here)
+	//
+	// JTMFS required
+	if(!jtmfat_isJTMFS(device_nr))
+	{
+		printk("Drive is not JTMFS formatted.\n");
+		return 1;
+	}
+
+
+	// Warning, this must be freed afterwards:
+	buf=malloc(16384);
+	//
+	str = malloc(256); str2 = malloc(256);
+	res1 = malloc(256); res2 = malloc(256);
+ 
+	//
+	current_block = which;
+
+	//
+	readblock( device_nr,  current_block, buf );
+
+	//
+	for(i=0,totalFiles=0,totalBytes=0,totalDirs=0; ; i++)
+	{
+		// LOAD NEW BLOCK?
+		if(  (i*sizeof(JTMFS_FILE_ENTRY)+sizeof(JTMFS_FILE_ENTRY)) >
+			getblocksize(device_nr)  )
+		{
+			// LOAD NEW BLOCK
+			// We will load another block, if one is available
+			if( jtmfat_getblock(device_nr,current_block) < 0xfffffff0 )
+			{
+				// reset byte offset pointer
+				i=0;
+				// we have to load another, since end of chain is not yet met
+				// get next block #
+				i2 = jtmfat_getblock(device_nr,current_block);
+				current_block = i2;
+				//
+				// read it into buffer
+				readblock(  device_nr, current_block, buf  );
+			}
+			else
+			{
+				// NO NEED TO LOAD NEW BLOCK
+				// This one was the last block?(no follower)
+				if( jtmfat_getblock(device_nr,current_block) == 0xfffffff8 )
+				{
+					// we are done here, end of chain reached
+					break;
+				}
+				else
+				{
+					//
+					printk("FAT error.\n");
+					break;
+				}
+			}
+			//
+	 	}
+ 
+		// Give user a possibility to stop the directory listing
+		if( (k = getch1())==27 )break;
+ 
+		// Get current dir entry
+		ad = ((DWORD)(buf)) + (i*sizeof(JTMFS_FILE_ENTRY));
+		(JTMFS_FILE_ENTRY*)fe=(DWORD)ad;
+  
+		// Is it a ghost?->continue without notifying it (deleted file)
+		// (ghost :  length == -1 )
+		if( fe->length==-1 ) continue;
+  
+		// Empty filename? -> End of dir.
+		if( !strlen(fe->name) )
+		{
+			break;
+		}
+   
+		// --------- Start output string creation here: ----------
+		strcpy(res1,""); strcpy(res2,"");
+
+		switch(fe->type)
+		{
+			// DIRECTORY
+			case 0x80:
+			strcat(res1, "[");
+			break;
+			// FILE
+			default:
+			break;
+		}
+
+		// PRINT FILENAME
+		//
+		// Note: I show filename so that all spaces show correctly,
+		//       this requires putting the filename inside '"'s.
+		sprintf(str, "%s", fe->name);
+		strcat(res1, str);
+
+		//
+		switch(fe->type)
+		{
+			// DIRECTORY
+			case 0x80:
+			totalDirs++;
+			strcat(res1, "]");
+			break;
+			// FILE
+			default:
+			totalFiles++;
+			totalBytes += fe->length;
+			sprintf(res2, "%d bytes", fe->length);
+			break;
+		}
+
+		// Print strings in a style
+		StretchPrint(res1, 30);
+		StretchPrint(res2, 15);
+
+		//
+		printk("\n");
+	}
+
+	//
+	StretchPrint("", 10);
+	sprintf(res1, "%d File(s)",	totalFiles);
+	StretchPrint(res1, 15);
+	sprintf(res1, "%d Bytes(s)",	totalBytes);
+	StretchPrint(res1, 15);
+	printk("\n");
+	StretchPrint("", 10);
+	sprintf(res1, "%d Dir(s)",	totalDirs);
+	StretchPrint(res1, 15);
+	sprintf(res1, "%d Bytes(s)",	totalBytes);
+	StretchPrint(res1, 15);
+	printk("\n");
+	//
+	//printk("End of directory.\n");
+
+	//
+	free(buf); free(str); free(str2);
+	free(res1); free(res2);
+
+ 
+	//
+	return 0;
+}

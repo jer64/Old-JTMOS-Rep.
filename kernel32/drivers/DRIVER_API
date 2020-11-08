@@ -1,0 +1,48 @@
+			
+			JTMOS BLOCK DEVICE API
+
+
+(Device Call #)
+	01		DEVICE_INIT
+	02		DEVICE_SHUTDOWN
+	03		DEVICE_READBLOCK
+	04		DEVICE_WRITEBLOCK
+	05		NONE
+	06		DEVICE_GETSIZE
+	07		DEVICE_GETBLOCKSIZE
+	08		DEVICE_SEEK
+	09		DEVICE_GETCH
+	0A		DEVICE_PUTCH
+	...and more...
+	(see dcpacket.h)
+
+
+Prototype:
+
+	DEVICE_CALL device_call_nr, option1, option2, option3, option4,
+			pointer1,pointer2
+
+Ways to implement:
+
+	DEVICE_CALL [DEVICE_INIT], 0,0,0,0, NULL,NULL
+	
+	DEVICE_CALL [DEVICE_SHUTDOWN], 0,0,0,0, NULL,NULL
+
+	DEVICE_CALL [DEVICE_READBLOCK], WHICH_BLOCK, 0,0,0,
+			FILE *,BYTE *buffer
+
+	...And so on...
+
+
+
+
+
+
+
+
+
+
+
+
+
+

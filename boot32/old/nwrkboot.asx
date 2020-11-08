@@ -1,0 +1,140 @@
+;32bit JTMOS boot sector by Jr1 7p1o 7u0m1n3n.
+;Radically modified and converted from double segment version to COM stylish
+;single segment 'executable'.
+[bits 16]
+org 0x100 ; 'COM file' start address (Yes, this is [.COM] file actually).
+%include "bios.mac" ;;;; (puts,putchar)
+%include "bootmod.inc" ;;;; Boot Module (Calls BIOS to read rest of boot+krn)
+jmp start ; Jump to PMODE initialization code.
+%include "seg.mac" ;;;; Segment Descriptor Macros
+%include "text.inc" ;;;; Any text things bootsector code needs
+%include "a20.inc" ;;;; A20 line setup code
+;----------------------------------------------------------------------------
+code16  dw 0
+;----------------------------------------------------------------------------
+; main procedure, this is the entry point
+start:
+        ;Kill floppy motor
+        mov dx,0x3f2
+        mov al,0
+        out dx,al
+
+        ; Begin protected mode setup code ...
+        mov ax,cs           ; load code-segment into DS and ES
+        mov ds,ax
+        mov es,ax
+        ; FS = Points to 0x0
+        mov ax,0x0000
+        mov fs,ax
+
+        mov     ax,cs                  ; get '32-bit' code segment into AX
+	movzx	eax,ax		; clear high word
+	shl	eax,4		; make a physical address
+        add     eax,dummy_descriptor ; calculate physical address of GDT
+        mov     dword [ds:gdt_start+2],eax
+
+        ;
+        call a20
+
+        ;
+        lgdt    [dword global_descriptor_table]
+[bits 32]
+        cli
+        call writeidt
+
+        ;
+        lidt    [dword 0] ; Interrupt descriptor
+                          ; table is located at memory
+                          ; location 0x00000000.
+        mov     eax,cr0
+        or      al,1
+        mov     cr0,eax
+        ;
+yoyo:
+        mov dx,0x3c8
+        mov al,0
+        out dx,al
+        inc dx
+        mov al,bl
+        out dx,al
+        out dx,al
+        out dx,al
+        inc bl
+        jmp yoyo
+        ;
+        ;***************************************************
+        ; ENTER KERNEL32
+ul:     ;
+        ; 
+        ; Setup protected mode stack.
+        mov esp,0x7c00
+        mov ax,0x18
+        mov ss,ax
+        ; Also define rest of the segments as well to prevent
+        ; additional errors occuring.
+        mov ds,ax
+        mov es,ax
+        mov fs,ax
+        mov gs,ax
+
+        ;
+        ; Jump ssss:oooooooo, 16:32, segment:offset.
+        db 0x66,0xea
+        dd 0x00010000
+        dw code32_idx
+;----------------------------------------------------------------------------
+global_descriptor_table:     ; here begins the GDT
+;
+gdt_start:        dw                 gdt_size,0,0            ; val for GDT reg
+;
+gdtoff:
+segdes dummy_descriptor,0xffff,0,0,0x9a,0xcf,0
+segdes code32_descriptor,0xffff,0,0,0x9a,0xcf,0
+segdes data32_descriptor,0xffff,0,0,0x92,0xcf,0
+segdes core32_descriptor,0xffff,0,0,0x92,0xcf,0
+segdes code16_descriptor,0xffff,0,0,0x9a,0,0
+segdes data16_descriptor,0xffff,0,0,0x92,0,0
+gdt_size equ $-(dummy_descriptor)
+
+code32_idx      equ   0x08
+data32_idx      equ   0x10
+core32_idx      equ   0x18
+
+
+;----------------------------------------------------------------------------
+employed_int:
+	iretd
+;----------------------------------------------------------------------------
+writeidt:
+        ;
+        ; Write IDT table with 256 interrupts pointing to null handler.
+        ;
+        mov ax,0
+        mov ds,ax
+
+        ; Setup basic IDT header. 48::(Length16,Offset32)
+        mov edi,0x00000000
+        mov ax,0x800 ; 256 interrupts
+        mov word [ds:edi+0*2],ax
+        mov eax,3*2 ; Offset to interrupt offset table
+        mov dword [ds:edi+1*2],eax
+        add edi,3*2
+
+        ; Total 256 entries
+        mov cx,256
+loop1:  ;
+        ; Copy single entry
+        mov ax,employed_int
+        mov word [ds:edi+0],ax
+        mov ax,cs
+        mov word [ds:edi+2],ax
+        mov ax,0x8e00
+        mov word [ds:edi+4],ax
+        mov ax,0x0
+        mov word [ds:edi+6],ax
+        add edi,8
+        ; Repeat until cx!=0
+        dec cx
+        jnz loop1
+        ret
+;----------------------------------------------------------------------------

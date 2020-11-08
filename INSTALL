@@ -1,0 +1,218 @@
+
+INSTALLATION OF JTMOS OPERATING SYSTEM NEW MILLENIUM
+-------------------------------------===============
+
+This document is under-construction.
+
+WELCOME!
+
+(C) 1997-2005,2006-2012,2013-2014 Jari Tuominen(jari@vunet.org).
+DISCLAIMER: See file COPYING for a license. Use at your own
+responsibility only. No workability of any kind is guaranteed.
+JTMOS does not work yet.
+
+SPECIAL NOTIFICATION:
+Much of the information here is outdated,
+e.g. uIP TCP/IP stack is no longer being used,
+instead a new TCP/IP is being developed,
+but is not currently working at all,
+therefore testing of internet features of JTMOS
+is currently not at all possible.
+The rewritting of kernel TCP/IP stack aims to
+create a better TCP/IP stack, which suits better
+making of TCP stack API layer for applications,
+in sense of system calls.
+
+Rebooting is similar to other operating systems:
+You may press ctrl+alt+del to reboot a JTMOS machine,
+or alternatively FLAGKEY+r (note: flagkey refers to
+a key also known as a Windows Key).
+
+NEW NOTE (FIRST DO THIS, install gcc-2.95, seems quite safe, no warranty):
+Go to gcc-2.95 and run install.sh AS ROOT:
+installs gcc-2.95 (DEB) and nasm (aptitude, DEB).
+Compiles under Debian Wheezy -distribution.
+Uses existing linker, compatible with gcc-2.95.
+GCC-2.95 is used due to syntax.
+
+X....INDEX
+------------------------------------------------------------------------
+1..REQUIREMENTS
+1A.INSTALLING OPERATING SYSTEM
+2..BUILD LIBC, APPLICATIONS AND KERNEL
+3..SETTING UP SLIP SERVER USING DIP
+4..JTMOS NETWORKING
+4A.ROUTING JTMOS TRAFFIC USING LINUX & IPCHAINS
+5..INSTALLING UTILITIES DISK ON HARD DISK
+6..OTHER HELP?
+
+1....REQUIREMENTS
+------------------------------------------------------------------------
+JTMOS requires atleast following hardware in order to run:
+- Pentium 200MHz (is current test machine MHz)
+- 32M RAM (64M recommended, some applications might not work with <=32M)
+- Standard 3.5" 1.44M floppy disk drive
+- Hard disk (uses up entire drive, partitioning is not yet supported, TODO)
+- EGA compatible display adapter
+- Keyboard
+Requirements to compile on Linux:
+- gcc 2.91.66 or compatible
+- nasm
+- perl
+- RedHat <=6.2 to compile JTMOS, or a matching EGCS/GCC version, and no
+the newer GCCs won't work, most probably, as far as I've figured it out.
+If other GCC versions do work, then please report me!
+- NASM to compile .asm files at the JTMOS source
+http://nasm.sourceforge.net
+
+Following hardware is preferred(the faster the better):
+- Pentium class processor or higher(MMX preferred)
+- 64M ram(more = not harmful)
+- VGA compatible display adapter with 256K RAM
+- SoundBlaster 1.0 or newer, 16-bit SoundBlaster preferred
+- PS/2 or serial mouse
+- ~100M IDE hard disk, todays tiny disks
+are huge for JTMOS needs...
+In fact JTMOS just need some 10 megabytes
+of hard disk space at max
+(including some future expansion space).
+
+1A) INSTALLING OPERATING SYSTEM
+-------------------------------
+
+Copy JTMOSDISK1.img and JTMOSDISK2.img on two seperate floppy disks
+(if JTMODISK2.img is not featured, ignore it).
+
+Boot up the system with JTMOS disk #1(JTMOSDISK1.img),
+if asked(ONLY IN PAST ALPHA VERSIONS, COMING SOON):
+after the floppy disk drive has stopped loading,
+insert JTMOS disk #2(JTMOSDISK2.img) in the drive
+and wait JTMOS booting up from it.
+
+NOTE: Disk #2 is currently not in use,
+special compression algorithm is used
+to put more files in 800K file system
+on the boot disk, so far it has been
+sufficient to provide the most critical
+parts of the system, needed for system
+testing.
+
+Disk #1 = System boot disk
+Disk #2 = Root file system disk
+
+
+2....BUILD LIBC, APPLICATIONS AND KERNEL
+------------------------------------------------------------------------
+make all
+
+Try also for other options:
+make help
+
+3....SETTING UP SLIP SERVER USING DIP
+------------------------------------------------------------------------
+
+In order to enable SLIP protocol on serial COM1, type following:
+slip
+
+This will autologin and establish the slip connection.
+
+See directory dip/ for files which maybe useful whether if you are
+going to try to setup the SLIP server.
+Basically what you need to do to setup a SLIP server, is to first install
+dip package, then do following command:
+
+su -c 'chmod +s /usr/sbin/diplogin'
+
+After that you must create user known e.g. "slippi" with password "slippi":
+
+[Become a super user or root]
+/usr/sbin/useradd
+
+Edit /etc/passwd and change user slippi's shell to /usr/sbin/diplogin.
+After this, the entry at /etc/passwd should look something like this:
+
+slippi:x:501:501::/home/slippi:/usr/sbin/diplogin
+
+4....JTMOS NETWORKING
+------------------------------------------------------------------------
+
+If you want to start up networking(currently not yet very useful),
+try entering "slip" at the smsh shell(terminal window #2).
+
+JTMOS networking capabilities is currently based
+on following main concepts:
+
+- Serial nullcable(connected to a server machine with SLIP server)
+- SLIP protocol
+- uIP TCP/IP stack(TCP/IP, ICMP, ARP, others...)
+
+JTMOS kernel has a built-in web and telnet server.
+Telnet server runs at a regular telnet server port 23.
+WWW server runs at port 8000.
+JTMOS machine IP-address/Mask can be configured by editing file:
+
+kernel32/heart/sysnet/uip/uipopt.h
+
+The default IP-address is 10.0.0.5 and default mask is 255.255.255.0.
+
+
+4A) ROUTING JTMOS TRAFFIC USING LINUX & IPCHAINS
+------------------------------------------------
+
+My current Linux router setup is following:
+
+# For slip server
+/sbin/modprobe slip
+
+# For general purpose routing
+/sbin/modprobe ne2k-pci
+/sbin/modprobe ne io=0x2A0
+/sbin/ifconfig eth0 195.74.0.47
+/sbin/ifconfig eth1 192.168.0.1
+/sbin/route add default gw 195.74.0.1 eth0
+/sbin/route add -net 192.168.0.0 netmask 255.255.255.0
+/sbin/route add -net 192.168.0.0 netmask 255.255.255.0 eth0
+# Network       1
+/sbin/ipchains -P forward DENY
+/sbin/ipchains -A forward -i eth0 -j MASQ
+# SLIP          2
+/sbin/ipchains -A forward -i sl0 -j ACCEPT
+/sbin/ipchains -A forward -i eth1 -j ACCEPT
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+OR
+
+#
+iptables -A FORWARD -i sl0 -j ACCEPT
+iptables -A FORWARD -i eth0 -j ACCEPT
+
+195.74.0.47 =	MY INTERNET IP-ADDRESS(CABLEMODEM)
+192.168.0.1 =	LINUX ROUTER MACHINE
+192.168.0.10 =	WINDOWS MACHINE
+10.0.0.5 =	JTMOS MACHINE
+
+Basically I forward ports 80 & 64 on 195.74.0.47
+to 10.0.0.5's ports 8000 and 23.
+
+So forth, JTMOS is visible for outer world via
+ports 80(WWW) and 23(TELNET).
+
+DIP sets up the SLIP device(sl0)'s routing,
+so you don't have to care about it.
+
+5....INSTALLING UTILITIES DISK ON HARD DISK
+------------------------------------------------------------------------
+Try 'make help'.
+
+6....OTHER HELP?
+------------------------------------------------------------------------
+Try following to get all the make options:
+make help
+
+Note: Ignore all the ncftpput requests(if any), just hit CTRL+C if takes too long.
+The FTP thing is for internal development only.
+
+You may mail me any time at jari.tuominen@kanetti.net for help concerning
+SLIP, uIP, JTMOS, OS development, etc.
+
+

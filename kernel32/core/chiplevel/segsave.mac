@@ -1,0 +1,35 @@
+;----------------------------------------------------
+;
+; These functions changes DS,ES,FS,GS registers.
+;
+; Restores state of DS,ES,FS,GS
+; to the state it was before.
+;
+
+;
+%macro SaneSelectors	0
+		push ax
+		mov ax,0x10
+		mov ds,ax
+		mov es,ax
+		pop ax
+%endmacro
+
+;
+%macro S_SEGREGS	0
+		cld
+                push ds
+                push es
+                push fs
+                push gs
+%endmacro
+
+;
+%macro R_SEGREGS	0
+		cld
+		pop gs		; gs
+		pop fs		; fs
+		pop es		; es
+		pop ds		; ds
+%endmacro
+

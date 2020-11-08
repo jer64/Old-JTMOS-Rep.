@@ -1,0 +1,27 @@
+
+			R A M D I S K
+
+Currently we are handling the filesystem inside a diskimage,
+so its not really running on top of some other device based storage,
+but instead in directly accessable memory region, allocated with malloc.
+In our vision, the ramdisk block device should not be the only
+block device that is allowed to be used with the JTMFS and JTMFAT.
+
+
+Implemention
+
+	RAMDISK BLOCK DEVICE <-> JTMOS FILE SYSTEM <-> JTMOS FAT
+
+Vision:
+
+	The ramdisk block device will be configured as /dev/ramdisk
+	the root (/) filesystem will be using the JTMOS File System(JTMFS).
+
+Other supported file systems
+
+	MSDOS FAT12/FAT16/FAT32 support would be preferred,
+	but we'll see if there'll be a demand enough for it
+	to make it right now, but in future, surely there will
+	be support for it, but also support for other file systems.
+
+

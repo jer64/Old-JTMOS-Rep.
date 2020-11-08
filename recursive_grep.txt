@@ -1,0 +1,1 @@
+find containingFolder/ -type f -exec sed -i~ .s/oldText/newText/g. {} \;

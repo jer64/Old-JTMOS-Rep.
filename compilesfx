@@ -1,0 +1,5 @@
+#!/bin/bash
+cd libc
+make sfx
+cd ..
+

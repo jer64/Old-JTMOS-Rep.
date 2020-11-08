@@ -1,0 +1,22 @@
+EGA registers
+-------------
+
+0x00 Horiz.tot.chr.
+0x01 Horiz.disp.chr. per line
+0x02 Horiz.synch pos.
+0x03 Synch width in chr.
+0x04 Vert.total loines
+0x05 Vert.total adjust (scanlines)
+0x06 Vert.displayed rows
+0x07 Vert.synch pos
+0x08 Interl.mode
+0x09 Max.scan addr.
+0x0a Cur.start (Scanline)
+0x0b Cur.end (...)
+0x0c Start address (MSB)
+0x0d Start address (LSB)
+0x0e Cursor address (MSB)
+0x0f Cursor address (LSB)
+0x10 Lightpen (MSB)
+0x11 ...      (LSB)
+

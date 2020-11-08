@@ -1,0 +1,440 @@
+JTMOS KERNEL DEBUG SHELL
+
+1.	Introduction
+
+JTMOS Kernel Internal Debug Shell is named in process list simply as .sysshN., with N 
+being the shell identifier number.
+
+The shell contains several commands that aid in debugging the kernel.
+
+2.	Available Commands
+
+l
+	Load binary, usage: l [File Name] [Hex Address To Load At]
+
+s
+	Save binary, usage: s [File Name] [Start Ad] [End Ad]
+
+f
+	Fill memory, usage: f [Start Ad] [End Ad] [Fill Byte in Hex]
+
+fm
+	File dump, usage: fm [File Name]
+
+who
+	Displays names of all users logged in the system.
+
+df
+	Displays disk usage of each drive.
+	(command functionality and name delivered from UN*X)
+
+reset
+	Performs a system reset.
+
+hidemouse
+	Hides mouse cursor.
+
+clear
+	Clears current terminal screen.
+
+palette
+	Shows current EGA palette.
+
+win
+
+	Launches up internal Graphical User Interface.
+
+demo
+	Performs a simple demonstration (output varies on kernel version).
+
+feed
+	Continously feed data on Legacy Serial COM1.
+
+tcp
+	Launch up TCP/IP stack process.
+
+slip
+	Launch up Serial Line Protocol (SLIP) process
+
+gs
+	Global Search function (fixing needed?).
+	A valuable function for kernel debugging purposes.
+
+help
+	Provides a basic manual of the shell.
+
+gustest2
+	Gravis Ultrasound test command.
+
+setserial
+	Configure a Legacy Serial Port (COMx),
+usage: setserial [port name] [speed]
+
+mousetest
+	Test mouse functionality.
+
+mantssdes
+	Manual for tssdes .command.
+
+taskdump
+	Makes a task dump.
+
+descsizes
+	Descriptor related debugging command.
+
+lsdev
+List all devices registered at DEVSYS .registry (accessible via DEVAPI).
+
+dirchain
+	Shows the FAT table chain of the root directory (possibly obsolete).
+
+dumpboot
+	Dump.s contents of the current device.s boot sector.
+
+digi
+	Play some digital audio for testing purposes (needs fixing).
+
+audio
+	Audio test (needs fixing).
+
+picture
+	Loads a picture and shows it on screen.
+
+kbreset
+	Resets the keyboard.
+
+init
+	Format specified device to JTMFS file system format.
+
+exist
+	Checks whether if the specified file exists.
+
+log
+	Add a string to the system log.
+
+wipe
+	Completely wipes the disk of any data.
+	Makes a confirmation request from user,
+	if user answers anything else but by pressing key
+.y., then the command will abort.
+
+sys
+	System transferring utility (similar to DOS).
+
+sleep
+	Sleeps specified number of seconds.
+
+math
+	Tests mathematical coprocessor.
+
+un
+	Unpacks files from the boot disk.
+	Only functions when booting from
+	a 3.5. floppy disk.
+
+exit
+	Exits the shell.
+
+ident
+	Exe .identification on/off.
+
+serialinfo
+	Shows BIOS information about Legacy Serial Ports.
+	This information may not be provided by all BIOSes.
+
+eps
+	Extended process list (extended ps).
+	Shows extensive amount of information about all
+	currently running processes.
+
+drv
+	Enables specified device driver.
+
+mm
+	Memory management: info
+
+mmf
+	Free all specified process. dynamically allocated memory.
+
+mmfptr
+	Free dynamically allocated memory from the specified location.
+
+kill
+	Terminate specified process.
+
+killall
+	Terminate all processes matching specified keyword wildcard.
+
+pci
+	Dumps all devices on the PCI bridge.
+
+color
+	Changes cursor color to specified one.
+	Parameter accepted is a hexadecimal number.
+
+echo
+	Echoes text on screen.
+
+testapp
+	Executes application in isolated memory space.
+	(EXPERIMENTAL)
+
+gdt
+	Displays information about gdt.
+
+scalls
+	Tests system calls.
+
+bgrun
+	Run specified program in background.
+	(NOTE: isolated memory space program)
+
+run / install
+	Run specified application.
+
+run10
+	Runs 10 of test programs in background.
+	(NOTE: isolated memory space program)
+
+lptclient
+	Acts as a client operating on Legacy LPT.
+
+lptserver
+	Acts as a server operating on Legacy LPT.
+
+biosinfo
+	Brings up BIOS information about disk.
+
+scrstart / scrstart2
+	Tests EGA driver.s ability to set the beginning
+	of the screen.
+
+terminal
+	Launches up a serial terminal application in
+	background.
+
+portinfo
+	Brings information about possibly detected
+	LPT .ports and their base addresses.
+
+in
+	Peeks a specified I/O port address.
+
+out
+	Writes a byte at specified I/O port address.
+
+copyall
+	Copies all files from drive to drive.
+
+um
+	Unmounts specified drive.
+
+mo
+	Mounts specified drive.
+
+autoinstall
+	Performs automatic installation of the operating system
+	on the IDE hard disk.
+	(EXPERIMENTAL)
+
+internet
+	Attempts to establish an internet connection.
+
+
+
+
+
+2.	Obsolete / Very Rarely Used Commands
+
+chdev
+	Change device (obsolete?).
+
+gfxmousetest
+	Test mouse in a graphical environment (obsolete?).
+
+hdread / hdwrite / hdwrite2
+	IDE HD testing functions (obsolete?).
+
+test50
+	Tests code segment 0x50 (obsolete?).
+
+switch
+	Make TSS switch (obsolete).
+
+stuffwrite
+	Miscellaneous debugging function (obsolete).
+
+rm
+Remove file(s), NOTE: all keywords entered for this particular command will be parsed as 
+wildcards.
+
+hardtest
+	IDE hard disk testing function.
+
+hardtest2
+	IDE hard disk testing function.
+
+report
+	Turns on debugging level 1 reports.
+Enables extensive kernel reporting mode.
+	Kernel text output will be much more verbose.
+
+debug
+	Turns on debugging level 2 reports.
+	Note: Considerably slows down the kernel.
+
+loadrd
+	Loads ramdisk from source file.
+	(all data on device ram will be lost)
+
+saverd
+	Saves ramdisk to a destination file.
+
+testwrite / testwrite2 / testwrite3
+	? (obsolete?).
+
+font
+	Resets system font back to kernel default.
+
+mallocinfo
+	Obsolete.
+
+meminfo
+	Reports information about memory status.
+
+date
+	Displays current date.
+
+hdvgatest
+	Tests drivers IDE HD and VGA.
+
+loadinglogo
+	Displays kernel load-time logo.
+
+:plasma / :plasma2
+	Plasma demonstration program.
+	Dysfunctional / obsolete.
+
+numbers
+	Counts some numbers (printk functionality test).
+
+free
+	Obsolete?
+
+keytest
+	Tests keyboard, and prints out all output entered
+	in a hexadecimal format.
+
+ktab
+	Shows ktab list in real-time.
+	User may press multiple keys at once,
+	the kernel attempts to detect which keys are pressed down.
+	Detection is restricted on hardware.s ability.
+
+paramtest
+	Simply outputs all parameters entered to the program.
+
+pri
+	Process priority setting utility.
+
+current
+	Displays current dnr and db of the current directory in use.
+
+pid
+	Identifies itself by displaying the shell process name and ID number.
+
+mkdir
+	Creates a directory.
+
+fi
+	Stands for .File Info., displays information about the specified file.
+
+readspeed
+	Measures reading speed.
+
+drvtest
+	Makes a stress test on file system by creating a directory named .src.,
+and then by starting multiplying the directory into several
+datadirN -directories
+
+pitf
+	Shows current PIT timer frequency in hexadecimal.
+
+wftest
+	File writing test (obsolete?).
+
+tssdump
+TSS description dump test.
+
+exse
+	GPF exception handler setup (obsolete?).
+
+intvec
+	Shows information about IDT descriptor.
+
+div
+	Divides a number .1234567. by specified number.
+	If no number is entered, the command will cause
+	a divide by zero .exception.
+
+regdump
+	Dumps contents of registers cr0 and cr3.
+
+ping
+	Unknown functionality.
+
+zd
+	Divide by zero. Causes an exception.
+
+lw
+	Shows value of .the linear walk pointer..
+
+sw
+	Shows value of .the search walk pointer..
+
+gpf
+	Setups a GPF handler (obsolete?).
+
+pi
+	Process information (obsolete?).
+
+benchmark
+	Executes a benchmark (obsolete?).
+
+touch
+	Touches a device to wake it up.
+	(affects internal caching mechanisms f.e.)
+
+optimize
+	Optimizes dynamic memory allocation system.
+	(obsolete?)
+
+hdtest
+	IDE hard disk test.
+
+PIT
+	PIT measurement (obsolete?).
+
+timer
+	Timer testing command.
+	(obsolete?)
+
+mres1 / mres2 / mres3
+	Mouse resolution N.
+	(old functionallity, possibly obsolete)
+
+foo
+	Obsolete command.
+
+dumpfat
+	Dumps FAT table.s contents.
+	(JTMFS specific)
+
+com1dump
+	Dumps everything on COM1.
+	(obsolete?)
+
+vm
+	Turn on VMware support (obsolete?).
+
+

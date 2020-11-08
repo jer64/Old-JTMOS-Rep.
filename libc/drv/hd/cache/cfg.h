@@ -1,0 +1,11 @@
+#ifndef __INCLUDED_HDCACHECONFIG_H__
+#define __INCLUDED_HDCACHECONFIG_H__
+
+// NUMBER OF CACHE ENTRIES
+#define N_HD_CACHE      1
+
+#endif
+
+
+
+

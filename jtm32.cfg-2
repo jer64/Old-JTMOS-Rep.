@@ -1,0 +1,10 @@
+{
+        size                    512
+        boot32/boot.bin         0 1
+        kernel32/kernel32.bin   1 1
+        pictures/jl1.raw        2    1
+        pictures/jl2.raw        130  1
+        pictures/jl1.pal        260  1
+        pictures/jl2.pal        262  1
+}
+

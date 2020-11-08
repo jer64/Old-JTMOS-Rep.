@@ -1,0 +1,419 @@
+#===============================================================
+#	JTMOS OPERATING SYSTEM LIBC
+#	(C)1997-2005 by Jari Tuominen
+#			(jari.tuominen@kanetti.fi).
+# 	Makefile for the LIBC.
+#
+#	PARTS OF JTMOS LIBC ARE FROM:
+#	DJGPP LIBC
+#	GNU LIBCS
+#	LIBC4
+#	LINUX KERNELS
+#===============================================================
+8TO1=../../tools/8to1
+BIN2C=../../tools/bin2c
+CC=gcc
+CFLAGS=-w -c -nostdlib -nostdinc -fno-builtin -fno-stack-protector\
+-O -march=pentiumpro -m32 \
+-DLIBC_BUILD_IN_PROGRESS=TRUE \
+-DLIBCVERSION=0x0100 \
+-DLIBCBETANAME="\"JTMOSLIBC1\"" \
+-Idataproc -Ibuffer -Idpi -nostdlib -nostdinc -fno-builtin \
+-Idate -I. \
+-Inetwork -Icommunication -Imemory -Idataproc -Iio \
+-IgraosClient -Ibasics -Iscall -Iconsole \
+-Iprocess -Ierror -Ifile -Ifile/fio \
+-Imm \
+-Irandom -Iinit -Iid -Iinclude
+AR=ar
+AS=as
+ASM=nasm
+ASMFLAGS=-f elf
+LD=ld
+OBJECTS=strspn.o strcspn.o memcmp.o buffer.o fixal.o sprintf.o printf.o string.o \
+fprintf.o malloc.o link.o isascii.o \
+modf.o floor.o floorl.o \
+io.o scall.o console.o filefind.o \
+cvt.o lconv.o ansiwin.o \
+communication.o random.o consoleText.o env.o termios.o \
+syschksum.o network.o strncpy.o strncmp.o strtol.o strtoul.o \
+strpbrk.o strchr.o qsort.o sbrk.o \
+freopen.o scanf.o sscanf.o floatconv.o \
+signal.o memchr.o memmove.o tmpnam.o filedir.o \
+process.o stlibc.o init.o numbers.o stat.o file.o postsup.o filebuf.o error.o assert.o \
+dpi.o video.o audio.o turboc.o mouse.o date.o \
+ctypefamily.o strncat.o graosClient.o \
+fclose.o feof.o ftell.o fseek.o fopen.o fflush.o \
+log10.o sin.o cos.o exp.o ceil.o log.o sqrt.o XXidentification.o \
+index.o rindex.o select.o labs.o acos.o asin.o \
+__infnan.o fmod.o fmodl.o pow.o powl.o atan.o tan.o fabsl.o fabs.o
+
+default: mlib
+
+all: mlib
+
+headers:
+	@echo "---: Copying include headers ----------"
+	# Link headers
+	./makelinks.sh
+	# Copy headers
+	cp buffer/*.h ../include/jtmos
+	cp fixal/*.h ../include/jtmos
+	cp dpi/*.h ../include/jtmos
+	cp scall/*.h ../include/jtmos
+	cp basics/*.h ../include/jtmos
+	cp date/*.h ../include/jtmos
+	cp process/*.h ../include/jtmos
+	cp console/*.h ../include/jtmos
+	cp process/*.h ../include/jtmos
+	cp dataproc/*.h ../include/jtmos
+	cp memory/*.h ../include/jtmos
+	cp io/*.h ../include/jtmos
+	cp termios/*.h ../include/jtmos
+	cp random/*.h ../include/jtmos
+	cp error/*.h ../include/jtmos
+	cp file/*.h ../include/jtmos
+	cp file/fio/*.h ../include/jtmos
+	cp video/*.h ../include/jtmos
+	cp audio/*.h ../include/jtmos
+	cp turboc/*.h ../include/jtmos
+	cp mouse/*.h ../include/jtmos
+	cp communication/*.h ../include/jtmos
+	cp network/*.h ../include/jtmos
+	cp graosClient/*.h ../include/jtmos
+	# Fix somethings
+	rm -f ../include/jtmos/stdlib.h
+	rm -f ../include/jtmos/stdio.h
+	rm -f ../include/jtmos/math.h
+
+mlib: $(OBJECTS)
+	@echo "---: Creating library -----------------"
+	rm -f libcjtmos.a
+	ar r libcjtmos.a *.o
+	cp libcjtmos.a ../lib
+	@echo "---: Here is the library --------------"
+	ls -la -k libcjtmos.a
+
+__infnan.o:
+	$(CC) $(CFLAGS) dataproc/__infnan.c
+
+__infnanl.o:
+	$(CC) $(CFLAGS) dataproc/__infnanl.c
+
+exp.o:
+	$(AS) dataproc/exp.S -o exp.o
+
+log.o:
+	$(CC) $(CFLAGS) dataproc/log.c
+
+ceil.o:
+	$(CC) $(CFLAGS) dataproc/ceil.c
+
+sqrt.o:
+	$(CC) $(CFLAGS) dataproc/sqrt.c
+
+labs.o:
+	$(CC) $(CFLAGS) dataproc/labs.c
+
+log10.o:
+	$(CC) $(CFLAGS) dataproc/log10.c
+
+cos.o:
+	$(AS) dataproc/cos.S -o cos.o
+
+sin.o:
+	$(AS) dataproc/sin.S -o sin.o
+
+acos.o:
+	$(CC) $(CFLAGS) dataproc/acos.c
+
+asin.o:
+	$(CC) $(CFLAGS) dataproc/asin.c
+
+rindex.o:
+	$(CC) $(CFLAGS) dataproc/rindex.c
+
+index.o:
+	$(CC) $(CFLAGS) dataproc/index.c
+
+syschksum.o:
+	$(CC) $(CFLAGS) dataproc/syschksum.c
+
+buffer.o:
+	$(CC) $(CFLAGS) buffer/buffer.c
+
+ansiwin.o:
+	$(CC) $(CFLAGS) console/ansiwin.c
+
+filefind.o:
+	$(CC) $(CFLAGS) file/filefind.c
+
+network.o:
+	$(CC) $(CFLAGS) network/network.c
+
+date.o:
+	$(CC) $(CFLAGS) date/date.c
+
+file.o:
+	$(CC) $(CFLAGS) file/file.c
+
+stat.o:
+	$(CC) $(CFLAGS) file/stat.c
+
+filebuf.o:
+	$(CC) $(CFLAGS) file/fio/filebuf.c
+
+fsetsize.o:
+	$(CC) $(CFLAGS) file/fio/fsetsize.c
+
+fgetsize.o:
+	$(CC) $(CFLAGS) file/fio/fgetsize.c
+
+fflush.o:
+	$(CC) $(CFLAGS) file/fio/fflush.c
+
+fopen.o:
+	$(CC) $(CFLAGS) file/fio/fopen.c
+
+freopen.o:
+	$(CC) $(CFLAGS) file/freopen.c
+
+fseek.o:
+	$(CC) $(CFLAGS) file/fio/fseek.c
+
+ftell.o:
+	$(CC) $(CFLAGS) file/fio/ftell.c
+
+feof.o:
+	$(CC) $(CFLAGS) file/fio/feof.c
+
+fclose.o:
+	$(CC) $(CFLAGS) file/fio/fclose.c
+
+graosClient.o:
+	$(CC) $(CFLAGS) graosClient/graosClient.c
+
+sbrk.o:
+	$(CC) $(CFLAGS) init/sbrk.c
+
+isascii.o:
+	$(CC) $(CFLAGS) dataproc/isascii.c
+
+link.o:
+	$(CC) $(CFLAGS) file/link.c
+
+dpi.o:
+	$(CC) $(CFLAGS) dpi/dpi.c
+
+filedir.o:
+	$(CC) $(CFLAGS) file/filedir.c
+
+fabsl.o:
+	$(AS) dataproc/fabsl.S -o fabsl.o
+
+fabs.o:
+	$(AS) dataproc/fabs.S -o fabs.o
+
+pow.o:
+	$(CC) -c dataproc/pow.c -o pow.o
+
+powl.o:
+	$(CC) -c dataproc/powl.c -o powl.o
+
+atan.o:
+	$(AS) dataproc/atan.S -o atan.o
+
+tan.o:
+	$(AS) dataproc/tan.S -o tan.o
+
+fmodl.o:
+	$(AS) dataproc/fmodl.S -o fmodl.o
+
+fmod.o:
+	$(AS) dataproc/fmod.S -o fmod.o
+
+memcpy.o:
+	$(ASM) $(ASMFLAGS) dataproc/memcpy.asm
+	mv dataproc/memcpy.o .
+#	$(CC) -c dataproc/memcpy.S -o memcpy.o
+
+strspn.o:
+	$(CC) $(CFLAGS) -c dataproc/strspn.c -o strspn.o
+
+strcspn.o:
+	$(CC) $(CFLAGS) -c dataproc/strcspn.c -o strcspn.o
+
+memcmp.o:
+	$(CC) $(CFLAGS) -c dataproc/memcmp.c -o memcmp.o
+
+floatconv.o:
+	$(CC) $(CFLAGS) -c dataproc/floatconv.c
+
+cvt.o:
+	$(CC) $(CFLAGS) -c dataproc/cvt.c
+
+ecvtbuf.o:
+	$(CC) $(CFLAGS) -c dataproc/ecvtbuf.c
+
+tmpnam.o:
+	$(CC) $(CFLAGS) file/tmpnam.c
+
+#directdisk.o:
+#	$(CC) $(CFLAGS) file/directdisk.c
+#
+error.o:
+	$(CC) $(CFLAGS) error/error.c
+
+termios.o:
+	$(CC) $(CFLAGS) termios/termios.c
+
+assert.o:
+	$(CC) $(CFLAGS) error/assert.c
+
+communication.o:
+	$(CC) $(CFLAGS) communication/communication.c
+
+select.o:
+	$(CC) $(CFLAGS) process/select.c
+
+process.o:
+	$(CC) $(CFLAGS) process/process.c
+	$(CC) $(CFLAGS) process/atexit.c
+	$(AS) process/setjmp.S -o setjmp.o
+	$(AS) process/longjmp.S -o longjmp.o
+	$(CC) $(CFLAGS) memory/sigsetjmp.c
+
+signal.o:
+	$(CC) $(CFLAGS) process/signal.c
+
+env.o:
+	$(CC) $(CFLAGS) process/env.c
+
+init.o:
+	$(CC) $(CFLAGS) init/init.c
+
+# ANTIQUE ALLOCATION SYSTEM(BROKEN?)
+malloc.o:
+	$(CC) $(CFLAGS) memory/malloc.c
+	$(CC) $(CFLAGS) memory/mallocMain.c
+
+# FIXAL
+fixal.o:
+	$(CC) $(CFLAGS) fixal/fixal.c
+
+# MODERN ALLOCATION SYSTEM(QF)
+modal.o:
+	$(CC) $(CFLAGS) memory/modal.c
+
+memchr.o:
+	$(CC) $(CFLAGS) memory/memchr.c
+
+memmove.o:
+	$(CC) $(CFLAGS) memory/memmove.c
+
+ctypefamily.o:
+	$(CC) $(CFLAGS) dataproc/ctypefamily.c
+
+qsort.o:
+	$(CC) $(CFLAGS) dataproc/qsort.c
+
+lconv.o:
+	$(CC) $(CFLAGS) dataproc/lconv.c
+
+strncat.o:
+	$(CC) $(CFLAGS) dataproc/strncat.c
+
+strtol.o:
+	$(CC) $(CFLAGS) dataproc/strtol.c
+
+strtoul.o:
+	$(CC) $(CFLAGS) dataproc/strtoul.c
+
+strpbrk.o:
+	$(CC) $(CFLAGS) dataproc/strpbrk.c
+
+strchr.o:
+	$(CC) $(CFLAGS) dataproc/strchr.c
+
+numbers.o:
+	$(CC) $(CFLAGS) dataproc/numbers.c
+
+printf.o:
+	$(CC) $(CFLAGS) dataproc/printf.c
+
+fprintf.o:
+	$(CC) $(CFLAGS) file/fprintf.c
+
+sscanf.o:
+	$(CC) $(CFLAGS) dataproc/sscanf.c
+
+scanf.o:
+	$(CC) $(CFLAGS) dataproc/scanf.c
+
+sprintf.o:
+	$(CC) $(CFLAGS) dataproc/sprintf.c
+
+string.o:
+	$(CC) $(CFLAGS) dataproc/string.c
+
+modf.o:
+	$(CC) $(CFLAGS) dataproc/modf.c
+
+floor.o:
+	$(CC) $(CFLAGS) dataproc/floor.c
+
+floorl.o:
+	$(CC) $(CFLAGS) dataproc/floorl.c
+
+strncpy.o:
+	$(CC) $(CFLAGS) dataproc/strncpy.c
+
+strncmp.o:
+	$(CC) $(CFLAGS) dataproc/strncmp.c
+
+postsup.o:
+	$(CC) $(CFLAGS) file/postsup.c
+
+io.o:
+	$(CC) $(CFLAGS) io/io.c
+
+random.o:
+	$(CC) $(CFLAGS) random/random.c
+
+console.o:
+	$(CC) $(CFLAGS) console/console.c
+
+consoleText.o:
+	$(CC) $(CFLAGS) console/consoleText.c
+
+scall.o:
+	$(ASM) $(ASMFLAGS) scall/scall.asm
+	mv scall/scall.o .
+
+stlibc.o:
+	$(ASM) $(ASMFLAGS) stlibc/stlibc.asm
+	mv stlibc/stlibc.o .
+
+video.o:
+	$(CC) $(CFLAGS) video/video.c
+
+audio.o:
+	$(CC) $(CFLAGS) audio/audio.c
+
+turboc.o:
+	$(CC) $(CFLAGS) turboc/turboc.c
+
+mouse.o:
+	$(CC) $(CFLAGS) mouse/mouse.c
+
+XXidentification.o:
+	$(CC) $(CFLAGS) id/XXidentification.c
+
+clean:
+	@echo ---: cleaning up kernel modules
+	rm -rf *.o
+
+cleanbak:
+	@echo ---: cleaning up backup files
+	rm -rf *~*
+

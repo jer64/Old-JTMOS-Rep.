@@ -1,0 +1,289 @@
+3. FAT (File Allocation Table)
+The FAT, as stated earlier, is a data structure that maps the data sectors of the storage device. It is
+similar to an array and each entry in the FAT corresponds to a cluster of data on the disk. The values
+in each entry of the FAT that are of interest are:
+•
+•
+•
+A value signifying that this data cluster is the last cluster of a file
+A value signifying that this data cluster is currently unused
+A value signifying where the NEXT data cluster of the current file is located.
+Specifically, the FAT entry values signify the following:
+Value
+ Meaning
+0x00
+ Unused
+0xFF0-0xFF6
+ Reserved cluster
+0xFF7
+ Bad cluster
+0xFF8-0xFFF
+ Last cluster in a file
+(anything else)
+ Number of the next cluster in the file
+Translation from physical to logical data sector numbers:
+The FAT works off logical data sector values. For the FAT12 system, while determining the logical
+sector number from the physical sector number, the following two factors need to be taken into
+account.
+•
+•
+From the organization of the disk, it is seen that the first 33 sectors are predefined. The actual
+data sector that holds user data does not exist in these first 33 sectors and starts at sector
+number 33 (remember we start with 0).
+The entries in positions 0 and 1 of the FAT are reserved. Therefore, it is entry 2 of the FAT
+that actually contains the description for physical sector number 33.
+Therefore, physical sector number = 33 + FAT entry number - 2
+For example, entry 5 of the FAT would actually refer to physical data sector number 36.
+4. Directories
+Directories (such as the root directory) exist like files on the disk, in that they occupy one or more
+sectors. Each sector (512 bytes) of a directory contains 16 directory entries (each of which is 32 bytes
+long). Each directory entry describes and points to some file or subdirectory on the disk. Thus, the
+collection of directory entries for a directory specify the files and subdirectories of that directory.
+Each directory entry contains the following information about the file or subdirectory to which it
+points.
+CSSE 332 – Operating Systems
+Spring 2004-2005
+Rose-Hulman Institute of Technology
+Computer Science and Software Engineering
+Prof. Archana Chidanandan
+Offset (in bytes) Length (in bytes) Description
+0
+ 8
+ Filename (but see notes below about the first byte in this field)
+8
+ 3
+ Extension
+11
+ 1
+ Attributes (see details below)
+12
+ 2
+ Reserved
+14
+ 2
+ Creation Time
+16
+ 2
+ Creation Date
+18
+ 2
+ Last Access Date
+20
+ 2
+ Ignore in FAT12
+22
+ 2
+ Last Write Time
+24
+ 2
+ Last Write Date
+26
+ 2
+ First Logical Cluster
+28
+ 4
+ File Size (in bytes)
+Note: We have already established that in the FAT12 system a cluster holds just one sector.
+Therefore, the two words are used interchangeably in the rest of this document.
+Notes on directory entries:
+1.2.3.4.The First Logical Cluster field specifies where the file or subdirectory begins. Thus the
+directory entry points to a file or subdirectory. Note that it gives the value of the FAT index.
+For example, if the First Logical Cluster value is “2”, then it implies that the index to the FAT
+array should be “2”, which is physical cluster “33” in the FAT12 system. If the value of the
+First Logical Cluster is “0”, then it refers to the first cluster of the root directory and that
+directory entry is therefore describing the root directory. (Keep in mind that the root directory
+is listed as the “..” entry i.e. the parent directory in all its sub-directories.)
+If the first byte of the Filename field is 0xE5, then the directory entry is free (i.e., currently
+unused), and hence there is no file or subdirectory associated with the directory entry.
+If the first byte of the Filename field is 0x00, then this directory entry is free and all the
+remaining directory entries in this directory are also free.
+The Attributes field of a directory entry is an 8-bit quantity where each bit refers to an
+attribute (property) of the file or subdirectory pointed to by this directory entry, as follows:
+CSSE 332 – Operating Systems
+Spring 2004-2005
+Rose-Hulman Institute of Technology
+Computer Science and Software Engineering
+Prof. Archana Chidanandan
+Bit Mask
+ Attribute
+0
+ 0x01
+ Read-only
+1
+ 0x02
+ Hidden
+2
+ 0x04
+ System
+3
+ 0x08
+ Volume label
+4
+ 0x10
+ Subdirectory
+5
+ 0x20
+ Archive
+6
+ 0x40
+ Unused
+7
+ 0x80
+ Unused
+a.b.If a bit in the Attributes field is set (i.e., is 1), that means that the file or subdirectory to
+which this directory entry points has the attribute associated with that bit. For example,
+if the Attributes field is 0001 0010, then the file/subdirectory pointed to by this directory
+entry is a hidden subdirectory. (Bit 1 is on, indicating that it is hidden. Bit 4 is also on,
+indicating that it is a subdirectory and not a file. Remember, bits are numbered right-to-
+left.)
+If the Attributes byte is 0x0F, then this directory entry is part of a long file name and can
+be ignored for purposes of this assignment. (The updated version of the Microsoft white
+paper on FAT systems includes details about long file names in FAT12, if you want to
+deal with them.)
+5.6.The formats for the time and data fields are specified in a Microsoft white paper on FAT
+systems. (But you won't need to know those formats for this assignment.)
+The directory entry specifies where the file or subdirectory starts (First Logical Cluster field)
+and the length of the file or subdirectory (File Size field). However, the file or subdirectory is
+NOT stored contiguously, in general. For a file that is more than 1 cluster long, you need to
+use the FAT to find the remaining clusters, per the next section of this document.
+FAT-12 file name and extension representation
+File names in DOS traditionally have a limit of 8 characters for the name, and 3 characters for the
+extension. There are a few things to be aware of:
+•
+•
+File/directory names and extensions are not null-terminated within the directory entry
+File/directory names always occupy 8 bytes--if the file/directory name is shorter than 8 bytes
+(characters) pad the remaining bytes with spaces (ASCII 32, or Hex 0x20). This also applies
+to 3-character extensions.
+CSSE 332 – Operating Systems
+ Rose-Hulman Institute of Technology
+Spring 2004-2005
+ Computer Science and Software Engineering
+Prof. Archana Chidanandan
+•
+ File/directory names and extensions are always uppercase. Always convert given file/directory
+names to uppercase.
+•
+ Directory names can have extensions too.
+•
+ "FILE1" and "FILE1.TXT" are unique (the extension does matter).
+•
+ Files and directories cannot have the same name (even though the attributes are different).
+Here are examples of how some file names would translate into the 11 bytes allocated for the
+file/directory name and extension in the directory entry (white space between quotes should be
+considered as spaces).
+•
+ filename provided
+ [01234567012]
+•
+ "foo.bar"
+ ->
+ "FOO
+ BAR"
+•
+ "FOO.BAR"
+ ->
+ "FOO
+ BAR"
+•
+ "Foo.Bar"
+ ->
+ "FOO
+ BAR"
+•
+ "foo"
+ ->
+ "FOO
+ "
+•
+ "foo."
+ ->
+ "FOO
+ "
+•
+ "PICKLE.A"
+ ->
+ "PICKLE A "
+•
+ "prettybg.big" ->
+ "PRETTYBGBIG"
+•
+ ".big"
+ ->
+ illegal! file/directory names cannot begin
+with a "."
+5. Why do we need a FAT?
+The directory entry has a field called the First Logical Cluster field which specifies where the file
+or subdirectory begins. Since files and directories can be larger than a sector, a directory or file
+may have to be stored across more than one sector. The data sectors belonging to a file or a
+directory are not always stored in contiguous locations in memory. A FAT therefore is used to
+keep track of which sectors are allocated to which file.
+To retrieve the entire contents of a file, for example, the First Logical Cluster field would point to
+the sector number that holds the first 512 bytes of data. The data from this sector needs to be read
+in. To determine if there is more data, one must examine the FAT entry that corresponds to the
+First Logical Cluster. By examining the FAT entry value, it can be determined if there is another
+sector allocated to this file. If there is, then the logical sector value is translated to physical sector
+value and the data from that sector is read in. Next, the FAT entry for the second data sector is
+examined to see if it is the end of the file. If not, the process is continued.
+Therefore, the FAT allows the access of data stored in non-contiguous sectors of the storage
+device.
+In Figure 2, File1.txt is stored in logical sectors 2, 4, 6 and 7. The directory entry field “Start
+Cluster” i.e. First Logical Cluster field points to sector number 2 which is the first data sector. In
+the FAT, the value at FAT entry 2 is 4, indicating that the next data sector of File1.txt is stored in
+logical sector 4. The last sector is sector 7, which is evident as the FAT entry 7 holds the EOC
+value.
+CSSE 332 – Operating Systems
+Spring 2004-2005
+Rose-Hulman Institute of Technology
+Computer Science and Software Engineering
+Prof. Archana Chidanandan
+Figure 2 Example showing the use of the FAT1
+6. Fat Packing
+In this section, the choice of the value “12” is explained followed by a description on how a 12-bit
+value is stored in the FAT.
+The space on a floppy disk = 1.44 Mbytes.
+The number of bytes in a sector = 512
+The number of sectors in 1.44 Mbytes = x ≈ 2812
+Therefore, the minimum number of bits required to address “x” sectors = 12 bits (211 < 2812 < 212)
+It can be seen from the above computations that 12 bits is the minimum number of bits needed to
+access the entire 1.44M space of a floppy disk.
+The challenge of 12 bits is that computers store everything in multiples of 8 bits (1 byte). So when
+storing the 12 bit quantity, the option of using 16 bits to store the 12 bits was unsatisfactory as it
+would leave 4 bits unused for every FAT entry. Since disk space is already at a premium on floppies
+another solution was designed. This solution involves packing 2 FAT entries (a total of 24 bits) into
+three 8 bit locations. This is great from an efficiency point of view but it means you have to do a little
+bit of work to extract a single entry. To further clarify examine the snapshot of the FAT. 8-bit entries
+are examined:
+1
+ The figure has been obtained from the CS324 course web-site from Brigham Young University.
+CSSE 332 – Operating Systems
+Spring 2004-2005
+Position0
+1
+2
+Byte
+76543210
+54321098
+32109876
+Rose-Hulman Institute of Technology
+Computer Science and Software Engineering
+Prof. Archana Chidanandan
+This space holds 2 FAT entries. The first entry would be 109876543210 where the first 4 bits come
+from position 1. The second entry is 321098765432 where the last 4 bits come from position 1. Since
+the FAT was developed for IBM PC machines, the data storage is in little-endian format i.e. the least
+significant byte is placed in the lowest address.
+So how do we work with the FAT? First, we think of the FAT as an array of bytes (8 bit quantities)
+since that is the only way we will be able to represent it in C. Now, if we want to access the nth FAT
+entry then we need to convert between 12 bit and 8 bit values.
+•
+•
+If n is even, then the physical location of the entry is the low four bits in location 1+(3*n)/2
+and the 8 bits in location (3*n)/2
+If n is odd, then the physical location of the entry is the high four bits in location (3*n)/2 and
+the 8 bits in location 1+(3*n)/2
+You are provided with the functions to read and write values to the FAT.
+References
+• http://students.cs.byu.edu/~cs345ta/labs/fall03_specs/lab_fat_help.htm#Directory%20structur
+es%20and%20their%20fields
+• White paper on FAT file systems.
+

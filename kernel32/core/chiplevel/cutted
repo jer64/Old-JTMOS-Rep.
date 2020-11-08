@@ -1,0 +1,35 @@
+                ;-------------------------------------------
+                ; Convert user stack into kernel memory space.
+                mov edx,0
+                mov dx,ss
+                push edx
+
+                mov edi,DWORD [DS:nr_curthread]
+                shl edi,2
+                add edi,thread_base
+                mov edx,DWORD [DS:EDI]
+
+                add  esp,edx
+                mov  dx,0x10
+                mov  ss,dx
+                jmp  skippy
+skippy:
+                nop
+                nop
+                nop
+                nop
+
+                ;-------------------------------------------
+                ; RESTORE STACK ...
+                ;-------------------------------------------
+                ; pop SS register to ebx
+                pop  ebx
+
+                mov edi,DWORD [DS:nr_curthread]
+                shl edi,2
+                add edi,thread_base
+                mov edx,DWORD [DS:EDI]
+
+                sub  esp,edx
+                mov  ss,bx
+

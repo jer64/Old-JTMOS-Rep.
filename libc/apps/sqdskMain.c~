@@ -1,0 +1,86 @@
+// sqdskMain.c
+#include <stdio.h>
+#include "sqdsk.h"
+
+// Request 512K of RAM from the init process.
+SYSMEMREQ(APPRAM_512K)
+
+// Main function for sqdsk
+int main(int argc,char **argv)
+{
+	int err,i,i2,i3,i4;
+	char *s;
+	static char *devs[]={"floppy:", "hda:", "ram:"};
+	static int n_devs=1;
+
+	//
+#ifndef SQDSK_USEFLOPPY
+	if(argc<2)
+	{
+		printf("Squirrel Disk Extractor 1.0\n");
+		printf("(C) 2002 by Jari Tuominen(jari.tuominen@kanetti.net)\n");
+		printf("Usage: sqdsk [source archive name or source device]\n");
+		printf("Examples:\n");
+		printf("  sqdsk ramdisk:\n");
+		printf("  sqdsk floppy:\n");
+		printf("  sqdsk sqdsk.sqa\n");
+		return 0;
+	}
+#endif
+
+	i=0;
+loop:
+	// Get device string
+#ifdef SQDSK_USEFLOPPY
+	s = devs[i];
+	printf("%s\n", s);
+#else
+	s=argv[1];
+#endif
+	// Is it a device?
+	if( s[strlen(s)-1]==':' )
+	{
+		s[strlen(s)-1]=0;
+		deviceNr = getdevnrbyname(s);
+		blockNr=-1;
+		blockOffs=0;
+		usingDevice=1;
+	//	printf("Assigning device '%s'(%d) as source.\n", s, deviceNr);
+	}
+	else
+	{
+	//	printf("Assigning file '%s' as source.\n", s);
+		usingDevice=0;
+	}
+
+	// Try extracting with current options
+	seloffs=0;
+	err=extract_archive(argv[1]);
+
+	// OK? => Skip 800K check
+	if(!err)goto endi;
+
+	// Check for SQARC at 800K offset of diskette
+	if(usingDevice)
+	{
+		// Extract archive from device
+		seloffs=1024*640;
+		err=extract_archive(argv[1]);
+
+		// If error:
+		if(err)
+		{
+			// Go through all devices enlisted
+			i++; if(i>=n_devs)goto endi; goto loop;
+		}
+	}
+
+endi:
+	if(err)
+	{
+		printf("Error %d.\n", err);
+	}
+
+	//
+	return err;
+}

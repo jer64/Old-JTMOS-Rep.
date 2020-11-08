@@ -1,0 +1,135 @@
+5c5
+< ; (C) 2002 by Jari Tuominen(jari.tuominen)
+---
+> ; (C) 2002 by Jari Tuominen(jari.tuominen@kanetti.net)
+16c16
+< ; ------------------------------------------------------------------
+---
+> ;-------------------------------------------------------------------
+56a57,59
+> ;-----------------------------------------------------------------
+> ; End of preparations section
+> ;-----------------------------------------------------------------
+65a69,71
+> ;-----------------------------------------------------------------
+> ; Beginning of scheduling mechanism section
+> ;-----------------------------------------------------------------
+71c77
+< 		; If we are a forceswitcher
+---
+> 		; If we are a forceswitcher -function
+75c81,82
+< 		jne .forceswitch
+---
+> 		jne .forceSwitch
+> 		; ---------------------------------------
+81c88,91
+< 		mov dword [nr_curthread],eax
+---
+> 		; ---------------------------------------
+> 		; Set curthread to it
+> 		mov dword [nr_curthread],eax ; Set force to 0
+> 		; Use switch only once, zero it now
+84c94
+< 		; Skip increasement
+---
+> 		; Switch to thread
+86d95
+< .no_force_switch1b:
+88,90c97,105
+< 		; HERE WE SWITCH TO
+< 		; NEXT SCHEDULABLE THREAD
+< .forceswitch:
+---
+> .no_force_switch1b:
+> 		; Regular ticking:
+> 		; Determine whether a switch is now needed
+> 		jmp .determineSwitch
+> 
+> ;-----------------------------------------------------------------
+> ; HERE WE SWITCH TO NEXT SCHEDULABLE THREAD
+> ;-----------------------------------------------------------------
+> .forceSwitch:
+99,100c114,116
+< 		; Reached last thread, reloading.
+< 		; Reset back to first thread
+---
+> 		; ---------------------------------
+> 		; Reached last thread,
+> 		; rewinding to thread 0.
+103c119
+< 		; Then just let's swap stack
+---
+> 		jmp .next_thread_specific:
+105,106c121,125
+< 		; Skip non-running threads
+<                 ; Get the PID
+---
+> 
+> 		; Skip non-running threads(2)
+>                 ; Get the PID &
+>                 ; get state(priority)
+> 		; if equals to zero, skip it.
+109d127
+<                 ; get thread priority
+112,113c130,131
+< 		je  .next_thread_l
+< 		; Get the PID's tick value
+---
+> 		je  .forceSwitch
+> 
+114a133,150
+> 		jmp .switchStack
+> ;------------------------------------------------------
+> ; Here we do the actual comparison of the time
+> ; left for the specified thread running at the moment,
+> ; if time is ran out, next thread is switched on.
+> ;
+> .determineSwitch:
+> 		; Skip non-running threads(1)
+>                 ; Get the PID &
+>                 ; get state(priority)
+> 		; if equals to zero, skip it.
+>                 mov esi,dword [nr_curthread]
+>                 add esi,thread_states
+>                 mov al,byte [ds:esi]
+> 		cmp al,0
+> 		je  .forceSwitch
+> 
+> 		; Get the PID's tick value
+123,124c159,170
+< 		ja  .next_thread_l
+< 
+---
+> 		je  .enoughOfThisThread
+> 		; ------------------------------
+> 		; Increase CPU spending counter
+> 		mov edi,dword [nr_curthread]
+> 		shl edi,2
+> 		add edi,thread_CPUspending
+> 		inc dword [ds:edi]
+> 		jmp .switchStack ; Switching is always done
+> 
+> .enoughOfThisThread:
+> 		; PROCESS HAS RAN ENOUGH TICKS,
+> 		; NOW WE SWITCH TO NEW PROCESS:
+127d172
+< 		;
+129c174,175
+< 		mov [ds:edi],bl
+---
+> 		mov byte [ds:edi],bl
+> 		jmp .forceSwitch
+130a177,180
+> ;------------------------------------------------------------
+> ; Switch to a new stack
+> ;------------------------------------------------------------
+> .switchStack:
+133d182
+< 		xor eax,eax
+139d187
+< 		mov edi,eax
+141c189
+< .last_thread_yes:
+---
+> 		mov edi,eax

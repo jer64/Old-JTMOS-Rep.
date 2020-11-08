@@ -1,0 +1,8 @@
+
+
+boot.asm        ---             My boot sector
+                                which loads itself and KERNEL
+                                into memory.
+
+*.inc *.mac     ---             Include files
+

@@ -1,0 +1,5 @@
+JTMOS kernel and LIBC implement same memory management system,
+just inside different memory space configuration.
+JTMOS LIBC also works with an alternative chain based MM system,
+but it is not recommended to use that, because it is very slow,
+and perhaps unreliable as well.

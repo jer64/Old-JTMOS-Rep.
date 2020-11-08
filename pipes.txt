@@ -1,0 +1,22 @@
+
+	JTMOS process to process communication
+	======================================
+
+void listener(void)
+{
+	int fd,cmd;
+
+	fd = open("/pipe/pipe1", 0);
+	cmd=0;
+	while(1)
+	{
+		if( (read(fd, cmd, 1))!=-1 )
+		{
+			// Action:
+			//
+		}
+		idle_moment();
+	}
+	close(fd);
+}
+

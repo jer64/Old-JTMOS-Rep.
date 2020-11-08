@@ -1,0 +1,118 @@
+;----------------------------------------------------
+;
+; These functions changes DS,ES,FS,GS registers.
+;
+; Restores state of DS,ES,FS,GS
+; to the state it was before.
+;
+; OBSOLETE CODE, NO MORE USED.
+;
+;----------------------------------------------------
+restoresegregs:
+		mov eax,edi
+		mov word [ds:tmp1],ax
+		shr eax,16
+		mov word [ds:tmp2],ax
+
+	;	jmp past
+		;========================
+		;
+		pushad
+		call copysregsfromthread
+
+		;
+	;	mov ax,word [ds:tmpds]
+	;	mov edi,(80+5*0)*2
+	;	call hexpoke16
+
+		;
+	;	mov ax,word [ds:tmpes]
+	;	mov edi,(80+5*1)*2
+	;	call hexpoke16
+
+		;
+	;	mov ax,word [ds:tmpfs]
+	;	mov edi,(80+5*2)*2
+	;	call hexpoke16
+
+		;
+	;	mov ax,word [ds:tmpgs]
+	;	mov edi,(80+5*3)*2
+	;	call hexpoke16
+
+		;
+	;	mov ax,word [ds:tmpss]
+	;	mov edi,(80+5*4)*2
+	;	call hexpoke16
+
+
+		; ESP
+	;	mov ax,word [ds:tmp2]
+	;	mov edi,(80+5*6)*2
+	;	call hexpoke16
+
+		;
+	;	mov ax,word [ds:tmp1]
+	;	mov edi,(80+5*6+4)*2
+	;	call hexpoke16
+		popad
+		;========================
+past:
+
+		;
+		mov ax,word [ds:tmpds]
+		mov bx,word [ds:tmpes]
+		mov cx,word [ds:tmpfs]
+		mov dx,word [ds:tmpgs]
+		mov bp,word [ds:tmpss]
+
+		; Switch to new selectors
+		mov ds,ax
+		mov es,bx
+		mov fs,cx
+		mov gs,dx
+		; return new SS
+		mov ax,bp
+		ret
+
+tmp1		dw 0
+tmp2		dw 0
+
+;
+; Saves current DS,ES,FS,GS
+; to the thread's own database.
+;
+storesegregs:
+		;
+                mov ax,ds
+		mov bx,es
+		mov cx,fs
+		mov dx,gs
+		mov bp,ss
+
+		; Switch to proper ISR memory space
+		; BUG: I used AX to switch to 0x10
+		; segment selector, heh..
+		; From now on I use SI.
+                mov si,0x10
+                mov ds,si
+                mov es,si
+
+		; Store the old segment selectors
+                mov word [ds:tmpds],ax
+                mov word [ds:tmpes],bx
+                mov word [ds:tmpfs],cx
+		mov word [ds:tmpgs],dx
+		mov ax,bp
+		mov word [ds:tmpss],ax
+
+		;
+		ret
+
+; temporarily stored segment selector registers
+tmpds		dw 0
+tmpes		dw 0
+tmpfs		dw 0
+tmpgs		dw 0
+tmpss		dw 0
+

@@ -1,0 +1,47 @@
+#!/bin/bash
+./incbuild.pl
+
+# Compile tools needed to build the kernel.
+cd tools
+make tools
+cd ..
+
+# Build boot sector for hard disk
+# Kernel needs a boot sector, we give it one here.
+# With a zero checksum if kernel32.bin does not exist. 
+# This boot sector is for hard disks and checksums
+# and other values are measured by kernel.
+cd boot32
+make
+cd ..
+
+# Build dummy kernel.
+cd dker
+make
+cd ..
+
+# Build kernel and link it.
+cd kernel32
+make
+cd ..
+cd kernel32
+make linkit
+cd ..
+
+# Build image tool.
+cd imgsrc
+make
+cd ..
+
+# Build boot sector for 1.44M floppy
+# This has to be done as last,
+# because it also does the kernel
+# checksum calculation(16-bit).
+cd boot32
+make
+cd ..
+
+#
+./buildimage
+cat boot32/kchecksum.inc
+

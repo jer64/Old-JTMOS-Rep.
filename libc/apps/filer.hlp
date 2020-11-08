@@ -1,0 +1,34 @@
+SQUIRREL FILE MANAGER VERSION 1.0
+=================================
+
+(C) 2003 by Jari Tuominen.
+
+Welcome to use one of the most advanced tools in
+the JTMOS operating system.
+
+The squirrel file manager is designed to provide
+basic functions of a file manager.
+
+It is not often that nice to use only basic command
+line, as sametime many of the operations could be
+done quicker by a simple file manager tool,
+this is exactly what SQUIRREL FILE MANAGER is
+aiming to provide.
+
+KEYS
+====
+
+F1 - view this help file.
+Insert - select/deselect file under cursor.
+Cursor up/down - move cursor up or down.
+ESC - exits the file manager.
+g - go to root directory.
+Enter - run a file or go to directory.
+
+FILES
+=====
+
+filer.hlp - this help file.
+filer.bin - the squirrel file manager application.
+
+

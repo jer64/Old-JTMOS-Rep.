@@ -1,0 +1,56 @@
+8TO1=../tools/8to1
+BIN2C=../tools/bin2c
+CC=gcc
+
+JTMDEF=-DJTMOSVERSION=0x0200 \
+-Icore/threads -Ish -fPIC -fno-pie \
+-Idosapi -DJTMOSKERNEL -DJTMOSBETANAME="\"New Millenium\"" \
+-Icore/gui -Iconsole -Iinit -Icore/math -Ifs/jtmfs -Idrivers/ramdisk \
+-Icore/sqa -Idos_api -Iposixapi -Idrivers/gus -Icore/statusline \
+-Itmp -Icore/kzombie \
+-Iinclude -Idrivers/floppy \
+-Idrivers/keyboard -Idrivers/mouse \
+-Idrivers/ega -Idrivers/term \
+-Idrivers/partsup -Idrivers/vga/s3 \
+-Icore/cp -Idrivers/audio -Idrivers/vga -Idrivers/sb -Icore/chiplevel -Icore/dataproc -Icore/dataproc \
+-Icore/asm -Imm \
+-Ifs -Ifs/api \
+-Icore/dispadmin -Idrivers/zero -Idrivers/null \
+-Icore/threads -Icore/centralprocess -Icore/cache \
+-Icore/systemcalls -Icore/io \
+-Idrivers/pci -Idrivers/lpt \
+-Idrivers/serial -Idrivers/tcpip \
+-Icore/StartUp \
+-I. -Idrivers/cmos \
+-Icore/useradmin -Icore/postman \
+-Icore/environment -Icore/hwdet \
+-Idrivers/slip -Idrivers/hd -Idrivers/hd/cache \
+-Idrivers/tcp -Idrivers/vmware -Ijtmfs -Icore/postman -Icore/cache -Iapi -Ifapi \
+-Icore/random -Idosapi -Idrivers \
+-Igui -Ifs/fat12 -Ifs/jtmfs
+
+CFLAGS3=-w -c -nostdlib -nostdinc -fno-builtin -fno-stack-protector\
+-O -march=pentiumpro -m32 $(JTMDEF)
+
+CFLAGS2=-Wuninitialized -c -nostdlib -nostdinc -fno-builtin -fno-stack-protector\
+-O2 -march=pentiumpro -m32 $(JTMDEF)
+
+CFLAGS=-c -w -nostdlib -nostdinc -fno-builtin -fno-stack-protector\
+-O2 -march=pentiumpro -m32 $(JTMDEF)
+
+TURBO=-w -c -nostdlib -nostdinc -fno-builtin -fno-stack-protector\
+-O2 -march=pentiumpro -m32 $(JTMDEF)
+
+# CFLAGS=-Wall -O2 -w -c
+AR=ar
+AS=as
+ASM=nasm
+ASMFLAGS=-f elf
+LD=ld  
+STALDFLAGS=-o kernel32.bin --oformat binary \
+        -Map kernel32.map -Tkernel32.src \
+        -Ttext 0x10000  -m elf_i386
+
+DOSLDFLAGS=-o dosker32.bin --oformat binary \
+        -Map dosker32.map -Tdosker32.src \
+        -Ttext 0x20000 -m elf_i386

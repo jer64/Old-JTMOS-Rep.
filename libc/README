@@ -1,0 +1,18 @@
+LIBC for JTMOS
+--------------
+
+(C) 2002-2005 by Jari Tuominen(jari@vunet.org).
+Use at your own responsibility only. Absolutely no warranty.
+
+This LIBC provides basic LIBC functions,
+with basic access to the JTMOS functions.
+Those are f.e. file management,
+thread management and text terminal access.
+
+OPTIONS FOR MAKE:
+
+make help		shows help
+make			builds libc & all programs
+make sfx		builds selectively programs & builds binutils archive
+
+

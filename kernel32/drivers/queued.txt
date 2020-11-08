@@ -1,0 +1,131 @@
+// Queued write block call
+int queuedWriteBlockCall(int dnr,
+	int pid,	
+	int n_function,
+	int par1,int par2,int par3,int par4,	
+	void *p1,void *p2)
+{
+	static DWORD nothing;
+	DCALL *d,*dd;
+	MSG *m;
+	DCPACKET *dc;
+	int done,rval,t,i,co;
+	char str[50];
+
+	// Initialize DCALL database first if needed
+	if(init_devq)
+	{
+		//
+		init_devq = 0;
+		memset(&devq, 0, sizeof(devq));
+	}
+
+	//---------------------------------------------------
+	// Initialize packet structure
+	//
+
+repeat2:
+	// Find empty DCALL entry
+	for(i=0,d=NULL; i<N_MAX_DEVQ; i++)
+	{
+		//
+		dd = devq[i];
+
+		// Re-use any freed entries
+		if(dd!=NULL && dd->isFree)
+		{
+			// Deallocate this entry
+			ReportMessage("REUSING DCALL ENTRY %d\n",
+				i);
+			d = devq[i];
+			d->isFree = FALSE;
+			break;
+		}
+
+		// Found empty entry?
+		if(dd==NULL)
+		{
+			//
+			devq[i] = malloc(sizeof(DCALL));
+			memset(devq[i], 0, sizeof(DCALL));
+			d = devq[i];
+			d->isFree = FALSE;
+			break;
+		}
+	}
+
+	//
+	if(d==NULL)
+	{
+		//
+		ReportMessage("%s: out of DCALL queues.\n",
+			__FUNCTION__);
+	/**	// Tell this to the caller.
+		return -1984; **/
+
+		// New way to handle this:
+		// ^^We just hang on and wait until one of the queues is freed^^
+		SwitchToThread();
+		ReportMessage("%s: searching for room ...\n",
+			__FUNCTION__);
+		goto repeat2;
+	}
+
+	//
+	DEBUGLINE
+
+	//---------------------------------------------------
+	// Construct Device Call packet
+	//
+
+	// Define DC PTR
+	dc = &d->msg.buf;
+
+	//
+	memset(&d->msg, 0, sizeof(MSG));
+
+	// Point done PTR at done variable
+	dc->done = &d->isFree;
+	// Point rval PTR at rval variable
+	dc->rval = &nothing;
+
+	// Copy write block
+	if(dbs[dnr])
+		memcpy(&d->buf,p1, dbs[dnr]);
+	else
+		panic("driver_remdevcall");
+
+	// Copy PTRs
+	// NOTE: this is the buffer from the DCALL queue entry.
+	dc->p1 = &d->buf;
+	dc->p2 = p2;
+	
+	// Copy pars
+	dc->par1 = par1;
+	dc->par2 = par2;
+	dc->par3 = par3;
+	dc->par4 = par4;
+
+	// Copy n_function
+	dc->n_function = n_function;
+
+	//
+	DEBUGLINE
+
+	//-----------------------------------------------------
+	// Send message to the device driver's service process
+	//
+	sendMessage(&d->msg, pid);
+
+	//
+	DEBUGLINE
+
+	// Return already, we just leave it on queue.
+	return 0;
+}
+
+//
+
+
+
+

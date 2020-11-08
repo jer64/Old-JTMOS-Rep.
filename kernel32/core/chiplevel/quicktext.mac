@@ -1,0 +1,123 @@
+%macro				mark	1
+				mov al,%1
+				mov byte [ds:edi],al
+				add edi,2
+%endmacro
+
+; This function is used for diagnostic purposes,
+; it can poke a single 16-bit ASCII hexadecimal
+; number on the first EGA screen(0xB8000).
+; ax = value
+hexpoke16:
+				pusha
+				mov cx,ax
+				add edi,0xB8000+(80*2)
+				shr ax,8
+				and ax,0xFF
+				call phex8
+				mov ax,cx
+				and ax,0xFF
+				call phex8
+				popa
+				ret
+
+; ax = value
+phex8:
+				mov bx,ax
+				shr ax,4
+				and ax,0x0f
+				call phex4
+				mov ax,bx
+				and ax,0x0f
+				call phex4
+				ret
+
+; ax = value
+phex4:
+				and al,0x0f
+				cmp al,0
+				jne n00
+				mark '0'
+				ret
+n00:
+                                cmp al,1
+                                jne n01
+                                mark '1'
+                                ret
+n01:
+                                cmp al,2
+                                jne n02
+                                mark '2'
+                                ret
+n02:
+                                cmp al,3
+                                jne n03
+                                mark '3'
+                                ret
+n03:
+                                and al,0x0f
+                                cmp al,4
+                                jne n04
+                                mark '4'
+                                ret
+n04:
+                                cmp al,5
+                                jne n05
+                                mark '5'
+                                ret
+n05:
+                                cmp al,6
+                                jne n06
+                                mark '6'
+                                ret
+n06:
+                                cmp al,7
+                                jne n07
+                                mark '7'
+                                ret
+n07:
+                                and al,0x0f
+                                cmp al,8
+                                jne n08
+                                mark '8'
+                                ret
+n08:
+                                cmp al,9
+                                jne n09
+                                mark '9'
+                                ret
+n09:
+                                cmp al,10
+                                jne n0a
+                                mark 'A'
+                                ret
+n0a:
+                                cmp al,11
+                                jne n0b
+                                mark 'B'
+                                ret
+n0b:
+                                and al,0x0f
+                                cmp al,12
+                                jne n0c
+                                mark 'C'
+                                ret
+n0c:
+                                cmp al,13
+                                jne n0d
+                                mark 'D'
+                                ret
+n0d:
+                                cmp al,14
+                                jne n0e
+                                mark 'E'
+                                ret
+n0e:
+                                cmp al,15
+                                jne n0f
+                                mark 'F'
+                                ret
+n0f:
+				ret
+
+

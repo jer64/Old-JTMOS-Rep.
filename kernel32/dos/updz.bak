@@ -1,0 +1,27 @@
+nasm -f coff jk32/asm/aslib.asm
+
+
+
+
+call move jk32\asm\aslib.o .
+
+call gcc -w -c -O2 sysansi.c     -Wall -O
+call gcc -w -c -O2 sysapp.c      -Wall -O
+call gcc -w -c -O2 sysfile.c     -Wall -O
+call gcc -w -c -O2 sysgfx.c      -Wall -O
+call gcc -w -c -O2 sysglvar.c    -Wall -O
+call gcc -w -c -O2 sysmem.c      -Wall -O
+call gcc -w -c -O2 sysmisc.c     -Wall -O
+call gcc -w -c -O2 system.c      -Wall -O
+call gcc -w -c -O2 sysusr.c      -Wall -O
+call gcc -w -c -O2 sysvga.c      -Wall -O
+call gcc -w -c -O2 io.c          -Wall -O
+call gcc -w -c -O2 int.c         -Wall -O
+call gcc -w -c -O2 kernel32.c    -Wall -O
+
+
+rem call ld sysansi.o sysapp.o sysfile.o sysgfx.o sysglvar.o sysmem.o sysmisc.o system.o sysusr.o sysvga.o io.o int.o kernel32.o aslib.o -o kernel32.bin -oformat binary -Tkernel32.src
+call ld aslib.o sysansi.o sysapp.o sysfile.o sysgfx.o sysglvar.o sysmem.o sysmisc.o system.o sysusr.o sysvga.o io.o int.o kernel32.o -o kernel32.bin -oformat binary -Tkernel32.src
+
+rem call writsect.exe c:\jtm\bin\jtmos\kernel32\kernel32.bin 1 1
+

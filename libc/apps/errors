@@ -1,0 +1,63 @@
+snake.o: In function `LoadHighScore':
+snake.o(.text+0xac6): undefined reference to `fclose'
+snake.o: In function `SaveHighScore':
+snake.o(.text+0xb86): undefined reference to `fclose'
+make: *** [linkit] Error 1
+aud.o: In function `read_audio_file':
+aud.o(.text+0x72): undefined reference to `fclose'
+make: *** [linkit] Error 1
+rt.o: In function `store':
+rt.o(.text+0x32): undefined reference to `fclose'
+rt.o(.text+0x12b): undefined reference to `fclose'
+rt.o(.text+0x134): undefined reference to `fclose'
+rt.o: In function `restore':
+rt.o(.text+0x18a): undefined reference to `fclose'
+rt.o(.text+0x1e1): undefined reference to `fclose'
+rt.o(.text+0x281): more undefined references to `fclose' follow
+make: *** [linkit] Error 1
+edit.o: In function `EditorSave':
+edit.o(.text+0x471): undefined reference to `fclose'
+edit.o: In function `EditorLoad':
+edit.o(.text+0x5a0): undefined reference to `fclose'
+make: *** [linkit] Error 1
+sqsh.o: In function `loadscript':
+sqsh.o(.text+0x18e): undefined reference to `fclose'
+make: *** [linkit] Error 1
+pdump.o: In function `pdump':
+pdump.o(.text+0x2b3): undefined reference to `fclose'
+make: *** [linkit] Error 1
+rf.o: In function `readfloppy':
+rf.o(.text+0x98): undefined reference to `fclose'
+make: *** [linkit] Error 1
+winshell.o: In function `main':
+winshell.o(.text+0x1b5): undefined reference to `fclose'
+make: *** [linkit] Error 1
+nzip.o: In function `compress1':
+nzip.o(.text+0x490): undefined reference to `fclose'
+nzip.o: In function `uncompress1':
+nzip.o(.text+0x84f): undefined reference to `fclose'
+nzip.o: In function `compress':
+nzip.o(.text+0xb85): undefined reference to `fclose'
+nzip.o: In function `uncompress':
+nzip.o(.text+0xd1f): undefined reference to `fclose'
+make: *** [linkit] Error 1
+cp.o: In function `copyFile':
+cp.o(.text+0x5d): undefined reference to `fclose'
+cp.o(.text+0xa0): undefined reference to `fclose'
+cp.o(.text+0xa6): undefined reference to `fclose'
+make: *** [linkit] Error 1
+val.o: In function `validateFile':
+val.o(.text+0x1c3): undefined reference to `fclose'
+make: *** [linkit] Error 1
+performance.o: In function `test1':
+performance.o(.text+0x88): undefined reference to `fclose'
+performance.o(.text+0xc3): undefined reference to `fclose'
+performance.o: In function `test2':
+performance.o(.text+0x190): undefined reference to `fclose'
+make: *** [linkit] Error 1
+sqa.o: In function `extract_entries':
+sqa.o(.text+0x238): undefined reference to `fclose'
+sqa.o(.text+0x28a): undefined reference to `fclose'
+sqa.o: In function `extract_archive':
+sqa.o(.text+0x371): undefined reference to `fclose'
+make: *** [linkit] Error 1

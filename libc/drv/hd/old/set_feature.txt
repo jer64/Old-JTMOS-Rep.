@@ -1,0 +1,68 @@
+        ide_hwif_t *hwif;
+        unsigned long flags;
+        int     i;
+        byte    status;
+
+        save_flags(flags);
+        cli();
+ 
+        hwif = HWIF(drive);
+        status=IN_BYTE(IDE_ALTSTATUS_REG);
+        printk("Status=0x%x\n", status);
+
+		/* Select drive 0 on the interface (a1= drive 1)*/
+        OUT_BYTE(0xa0,IDE_SELECT_REG);
+        printk("IDE_SELECT_REG=0x%x (Should be 0xa0)\n",
+                IN_BYTE(IDE_SELECT_REG));
+        status=IN_BYTE(IDE_ALTSTATUS_REG);
+        printk("Status=0x%x\n", status);
+
+		/* Select subfeature 0x3 (Set transfer mode) */
+        OUT_BYTE(0x03,IDE_FEATURE_REG);
+        status=IN_BYTE(IDE_ALTSTATUS_REG);
+        printk("Status=0x%x\n", status);
+
+		/* Set the transfer mode to PIO mode 4 */
+        OUT_BYTE(0x0c,IDE_NSECTOR_REG);
+        printk("IDE_NSECTOR_REG=0x%x (Should be 0x0c)\n",
+                IN_BYTE(IDE_NSECTOR_REG));
+        status=IN_BYTE(IDE_ALTSTATUS_REG);
+        printk("Status=0x%x\n", status);
+
+		/* Execute command 0xEF (Set Features) */
+        OUT_BYTE(0xEF,IDE_COMMAND_REG);
+        printk("Command executed...\n");
+
+		/* Check the status and error code */
+        for(i=0;i<10;i++) {
+                status=IN_BYTE(IDE_ALTSTATUS_REG);
+                printk("Status=0x%x\n", status);
+        }
+        status=IN_BYTE(IDE_ERROR_REG);
+        printk("Error=0x%x\n", status);
+
+        restore_flags(flags);
+
+
+  Status=0x50								<-- 0x50 =
+DRDY, DSC (no error)
+  IDE_SELECT_REG=0xa0 (Should be 0xa0)
+  Status=0x50
+  Status=0x50
+  IDE_NSECTOR_REG=0xc (Should be 0x0c)
+  Status=0x50
+  Command executed...
+  Status=0xd0								<-- 0xd0 =
+Busy (as expected)
+  Status=0xd0
+  Status=0x50
+  Status=0x50
+  Status=0x50
+  Status=0x50
+  Status=0x50
+  Status=0x50
+  Status=0x50
+  Status=0x50
+  Error=0x0									<--
+No error!
+

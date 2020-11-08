@@ -1,0 +1,19 @@
+GRAOS WINDOWING SYSTEM
+----------------------
+
+(C) 2003-2005 by Jari Tuominen.
+
+This is the official windowing system for JTMOS.
+
+GRAOS package contains atleast following parts:
+- GUI screen drawing functions.
+- Smart GUI screen update regions.
+- High level VGA support (640x480 16c).
+- Interface for applications (GUI message server).
+- Buttons.
+- Movable windows.
+- Ability to print text graphically.
+- Frame buffers inside windows.
+- Special frame buffer type windows.
+- Optimized EGA terminal emulation.
+

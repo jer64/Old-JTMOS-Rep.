@@ -1,0 +1,131 @@
+// =====================================================
+// HARDWARE DETECTION PROCESS
+// Tries different drives and searches for new hardware.
+// (C) 2003 by Jari Tuominen
+// =====================================================
+#include "kernel32.h"
+#include "threads.h"
+#include "hwdet.h"
+
+//
+int alreadyCalled=0;
+DWORD hwdetCounter=0,hwdetDone=0;
+//
+THREAD hwdetThread;
+
+// Hardware detection
+void hwdet(void)
+{
+	//
+	hwdetDone=0;
+
+	//
+	disable();
+	ThreadCreateStack(&hwdetThread, 1024*512);
+	hwdetThread.pid = 
+		create_thread(hwdetThread.stack,
+			hwdetThread.l_stack, hwdetProgram);
+
+	// Non-visible thread terminal
+	SetThreadTerminal(hwdetThread.pid, 1);
+	// Max. 31 characters
+	IdentifyThread(hwdetThread.pid, "KHWDET");
+	enable();
+
+	//
+	printk("Detecting hardware ");
+	while(hwdetDone==0)
+		{
+			sleep(1);
+			printk(".");
+		}
+	printk(" OK\n");
+}
+
+//
+void hwdetProgram(void)
+{
+	if(alreadyCalled)
+	{
+		hwdetDone=1;
+		ExitThread(0);
+	}
+	alreadyCalled=1;
+
+	// === DETECT NEW HARDWARE =======================
+	// ===============================================
+	printk("****************************************************\n");
+	printk("Hardware detection in progress\n");
+
+
+	// ===========================
+	// COMMUNICATION DEVICES INIT:
+
+	//
+	if(LPT_ENABLED)
+		// LPT ports
+		lpt_init();
+
+	// (HINT: DO THIS BEFORE THE SERIAL MOUSE, MOST WISE THING.)
+	if(SERIAL_ENABLED)
+		// SERIAL ports
+		serial_init();
+
+	if(PCI_ENABLED)
+		// PCI bus
+		pci_init();
+
+	//
+	if(PS2MOUSE_ENABLED)
+		ps2mouse_init();
+
+	//
+	if(SERMOUSE_ENABLED)
+		SerialMouseInit();
+
+	// ============================
+	// OTHER HARDWARE DEVICES INIT:
+
+	//
+	// loading_logo();
+
+	// =========================
+	// BLOCK DEVICE DRIVERS INIT:
+
+	//
+	if(FLOPPY_ENABLED)
+		// init floppy drive A:
+		fdc_init();
+
+	//
+	if(ALTDEV_ENABLED)
+		// init alt: device
+		altdev_init();
+
+
+	// Generic audio device init
+	if(AUDIO_ENABLED)
+		audio_init();
+
+	// Gravis Ultrasound init
+	if(GUS_ENABLED)
+		gus_init();
+
+	// Sound Blaster init
+	// 0=only checks briefly for SB, 1=hardscan, takes time
+	if(SB_ENABLED)
+		sb_init(0);
+
+	// Flag that we are done here
+	hwdetDone=1;
+
+	// =============================================================
+	printk("End of hardware detection.\n");
+	printk("****************************************************\n");
+
+	// Exit
+	ExitThread(0);
+}
+
+//
+

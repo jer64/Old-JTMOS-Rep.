@@ -1,0 +1,27 @@
+THREADS: RUN APPLICATION
+
+RunApplication description:
+A) Define memory space on APPLICATION -structure
+B) Map memory space on GDT
+C) Create stack and thread
+D) Identify thread
+
+Conditions on C:
+
+* IF APPLICATION THREAD: 
+On application thread's case the stack must be defined 
+with the virtual memory space's own addresses.
+
+* IF KERNEL THREAD: 
+On kernel thread's case the stack must be allocated
+with kernel's own malloc. Kernel threads do not have
+own seperate memory space, they all share common
+memory space, this maybe a security risk,
+but makes kernel/drivers run much faster,
+and simplifies the making of kernel.
+However, f.e. drivers are considered "applications",
+and will be running at their own virtual memory spaces.
+
+
+
+

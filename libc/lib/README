@@ -1,0 +1,7 @@
+libcjtmos.a
+Collection of all objects of JTMOS LIBC. Used by
+compiler&linker when building applications.
+
+stdapp.src
+Application memory space specification.
+

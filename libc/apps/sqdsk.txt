@@ -1,0 +1,7 @@
+SQUIRREL ARCHIVE DISK EXTRACTOR
+-------------------------------
+
+If a device is being used, the whole device's contents are
+loaded into memory, according to needs, sametime as it
+is being read.
+

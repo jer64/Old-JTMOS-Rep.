@@ -1,0 +1,47 @@
+//
+WORD _tcpchksum(PACKET *p)
+{
+	DWORD sum;
+	WORD padd,len_tcp,word16;
+	BYTE *buf;
+	int i;
+
+	//
+	len_tcp = p->tcp.doff*4;
+	padd=0;
+
+	//initialize sum to zero
+	sum=0;
+	
+	// make 16 bit words out of every two adjacent 8 bit words and 
+	// calculate the sum of all 16 vit words
+	buf = &p->ip;
+	for (i=0;i<len_tcp+padd;i=i+2){
+		word16 =((buf[i]<<8)&0xFF00)+(buf[i+1]&0xFF);
+		sum = sum + (DWORD)word16;
+	}	
+	// add the TCP pseudo header which contains:
+	// the IP source and destinationn addresses,
+	// 1
+	word16 = p->ip.srcip & 0xFFFF;
+	sum=sum+word16;	
+	word16 = (p->ip.srcip>>16) & 0xFFFF;
+	sum=sum+word16;	
+
+	// 2
+	word16 = p->ip.dstip & 0xFFFF;
+	sum=sum+word16;	
+	word16 = (p->ip.dstip>>16) & 0xFFFF;
+	sum=sum+word16;	
+
+	// the protocol number and the length of the TCP packet
+	sum = sum + p->ip.proto + len_tcp; // NOTE: MUST CONTAIN DATA LENGTH TOO (TODO)
+
+	// keep only the last 16 bits of the 32 bit calculated sum and add the carries
+    	while (sum>>16)
+		sum = (sum & 0xFFFF)+(sum >> 16);
+		
+	// Take the one's complement of sum
+	sum = ~sum;
+	return ((unsigned short) sum);
+}

@@ -1,0 +1,17 @@
+
+			JTMOS HEART
+
+misc = miscellaneous, mostly low level functions,
+	+ kernel32.c (MAIN KERNEL FILE, AKA START UP / INIT / CLOSE)
+Besides this is the heart of the JTMOS, the ../init/ dir will still
+contain the init code for the OS and ../init/hwdet.c the hardware
+detection code.
+
+
+- For threads see:
+
+iodma/
+threads/ (aka process/)
+
+( llint.asm, threads.c )
+

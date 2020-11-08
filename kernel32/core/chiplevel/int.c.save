@@ -1,0 +1,157 @@
+/*
+ * This code is really nasty stuff,
+ * I wonder why this crap always
+ * crashes my computer... Well, I hope
+ * I make it work atleast somehow
+ * properly sooner or later.
+ */
+#include "jk32/int.h"
+#include "jk32/cpu.h"
+
+// * Exter. functions at aslib *
+extern void nullinterrupt(void);
+extern void genint(long which);
+
+//
+unsigned int irq_mask = 0xFFFF; // All IRQs disabled initially
+
+// This function redirects idt starting at 0x00000000
+// and the table itself so will start from 0x00000006 ....
+// As default it will be 0x800(2048 dec.) bytes long,
+// it will bring enough space for exactly 256 interrupts. 
+void int_redirectidt(void)
+{
+ //
+ long i,i2,i3,i4,ad,ad2,ad3,ad4;
+ unsigned *p;
+
+ //
+ disable();
+
+ // Point at beginning of the IDT table
+ p=0x00000000;
+ //
+ p[0]=0x800; // IDT size = 0x800 (256 interrupts)
+ p[1]=0x0006; // ---> 0x00000006
+ p[2]=0x0000; // -/
+
+ // Point at beginning of the interrupt offsets
+ p=0x00000006;
+ // Write all 256 interrupts to point at nullinterrupt handler.
+ for(i=0; i<256; i++)
+ {
+  ad=(unsigned long int)nullinterrupt;
+  p[0+i*4]=ad&0xffff;
+  p[1+i*4]=GIMMIE_CS();
+  p[2+i*4]=0x8e00;
+  p[3+i*4]=(ad>>16)&0xffff;
+ }
+
+
+ // Activate new IDT
+ setupidtat0();
+
+ //
+// genint(0x64);
+}
+
+void InitInterruptHandlerSystem(void)
+{
+   //
+   int_redirectidt();
+
+   // Init the timer chip
+   Init8259();
+   
+   // here, we enable CPU interrupts. //
+//we don't..   enable();
+}
+
+void setint(long intnum,void *handler)
+{
+ //
+ unsigned *p,*pz;
+ long ad,ad2,ad3,ad4,l,h;
+
+ // Offset to IDT
+ p=0x00000000;
+
+ //
+ ad=(unsigned long int)handler;
+
+ // 1x32bit->2x16bit
+ l=ad&0xffff;
+ h=(ad>>16)&0xffff;
+
+ // Store changse
+ p[(intnum<<2)+0]=l;
+ p[(intnum<<2)+3]=h;
+
+ //
+ return;
+}
+
+void *getint(long intnum)
+{
+ //
+ int *p;
+ long ad,ad2,ad3,ad4,l,h;
+
+ // Offset to IDT
+ p=0x00000000;
+
+ //
+ l=p[(intnum<<2)+0];
+ h=p[(intnum<<2)+3]<<16;
+
+ //
+ ad=l|h;
+
+ //
+ return ad;
+}
+
+
+/*** Code borrowed from GazOS ... ***/
+
+void Init8259(void)
+{
+   outportb(M_PIC, ICW1);       /* Start 8259 initialization    */
+   outportb(S_PIC, ICW1);
+
+   outportb(M_PIC+1, M_VEC);    /* Base interrupt vector        */
+   outportb(S_PIC+1, S_VEC);
+
+   outportb(M_PIC+1, 1<<2);     /* Bitmask for cascade on IRQ 2 */
+   outportb(S_PIC+1, 2);        /* Cascade on IRQ 2             */
+
+   outportb(M_PIC+1, ICW4);     /* Finish 8259 initialization   */
+   outportb(S_PIC+1, ICW4);
+
+   outportb(M_IMR, 0xff);       /* Mask all interrupts          */
+   outportb(S_IMR, 0xff);
+}
+
+/* enables irq irq_no */
+void enable_irq(unsigned short irq_no)
+{
+        irq_mask &= ~(1 << irq_no);
+        if(irq_no >= 8)
+                irq_mask &= ~(1 << 2);
+
+        outportb(M_PIC+1, irq_mask & 0xFF);
+        outportb(S_PIC+1, (irq_mask >> 8) & 0xFF);
+}
+
+/* disables irq irq_no */
+void disable_irq(unsigned short irq_no)
+{
+        irq_mask |= (1 << irq_no);
+        if((irq_mask & 0xFF00)==0xFF00)
+                irq_mask |= (1 << 2);
+
+        outportb(M_PIC+1, irq_mask & 0xFF);
+        outportb(S_PIC+1, (irq_mask >> 8) & 0xFF);
+}
+
+/*** Borrow ends here ***/

@@ -1,0 +1,35 @@
+ // RENDER CODE SEGMENT DESCRIPTOR
+ // ------------------------------
+ // Segment limit       (0-15 - 16 bits)
+ thread_codedescs[0 + pid*8] = 0xff;
+ thread_codedescs[1 + pid*8] = 0xff;
+ // Base                (0-15 - 16 bits)
+ thread_codedescs[2 + pid*8] = 0;
+ thread_codedescs[3 + pid*8] = 0;
+ // Base II             (16-23 - 8 bits)
+ thread_codedescs[4 + pid*8] = 0;
+ // Flags
+ thread_codedescs[5 + pid*8] = 0x9a;
+ // Access
+ thread_codedescs[6 + pid*8] = 0xcf;
+ // Base III            (24-31 - 8 bits)
+ thread_codedescs[7 + pid*8] = 0;
+
+
+ // RENDER DATA SEGMENT DESCRIPTOR
+ // ------------------------------
+ // Segment limit       (0-15 - 16 bits)
+ thread_datadescs[0 + pid*8] = 0xff;
+ thread_datadescs[1 + pid*8] = 0xff;
+ // Base                (0-15 - 16 bits)
+ thread_datadescs[2 + pid*8] = 0;
+ thread_datadescs[3 + pid*8] = 0;
+ // Base II             (16-23 - 8 bits)
+ thread_datadescs[4 + pid*8] = 0;
+ // Flags
+ thread_datadescs[5 + pid*8] = 0x92;
+ // Access
+ thread_datadescs[6 + pid*8] = 0xcf;
+ // Base III            (24-31 - 8 bits)
+ thread_datadescs[7 + pid*8] = 0;
+

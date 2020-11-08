@@ -1,0 +1,155 @@
+;-----------------------------------------------------------------
+; Beginning of scheduling mechanism section
+;-----------------------------------------------------------------
+; NOTE:
+; an idle process must be running in the background
+; all the time, system will halt without it.
+;
+
+		; If we are a forceswitcher -function
+		; then go to switch code
+		mov eax,%3
+		cmp eax,0
+		jne .forceSwitch
+		; ---------------------------------------
+
+		; Force jump to a specified thread?
+		mov eax,dword [force_switch_thread_nr]
+		cmp eax,0
+		je  .no_force_switch1b
+		; ---------------------------------------
+		; Set curthread to it
+		mov dword [nr_curthread],eax ; Set force to 0
+		; Use switch only once, zero it now
+		xor eax,eax
+		mov dword [force_switch_thread_nr],eax
+		; Switch to thread
+		jmp .next_thread_specific
+
+.no_force_switch1b:
+		; Regular ticking:
+		; Determine whether a switch is now needed
+		jmp .determineSwitch
+
+;-----------------------------------------------------------------
+; HERE WE SWITCH TO NEXT SCHEDULABLE THREAD
+;-----------------------------------------------------------------
+.forceSwitch:
+.next_thread_l:
+		; Jump to next thread
+		inc dword [nr_curthread]
+.next_thread_specific:
+		mov eax,dword [nr_curthread]
+		mov ebx,dword [nr_threads]
+		cmp eax,ebx
+		jne .not_last_thread
+		; ---------------------------------
+		; Reached last thread,
+		; rewinding to thread 0.
+		mov eax,0
+		mov dword [nr_curthread],eax
+		jmp .next_thread_specific
+.not_last_thread:
+
+		; Skip non-running threads(2)
+                ; Get the PID &
+                ; get state(priority)
+		; if equals to zero, skip it.
+                mov esi,dword [nr_curthread]
+                add esi,thread_states
+                mov al,byte [ds:esi]
+		cmp al,0
+		je  .forceSwitch
+
+		;
+		jmp .switchStack
+;------------------------------------------------------
+; Here we do the actual comparison of the time
+; left for the specified thread running at the moment,
+; if time is ran out, next thread is switched on.
+;
+.determineSwitch:
+		; Skip non-running threads(1)
+                ; Get the PID &
+                ; get state(priority)
+		; if equals to zero, skip it.
+                mov esi,dword [nr_curthread]
+                add esi,thread_states
+                mov al,byte [ds:esi]
+		cmp al,0
+		je  .forceSwitch
+
+		; ========================
+		; Diagnostic number
+		mov ax,word [nr_curthread]
+		mov edi,0
+;		call hexpoke16
+		; ========================
+
+		; Get the PID's tick value
+		mov edi,dword [nr_curthread]
+		add edi,thread_tick
+		; Increase tick value
+		mov bl,byte [ds:edi]
+		inc bl
+		mov byte [ds:edi],bl
+		; Compare it to priority
+		cmp bl,al
+		je  .enoughOfThisThread
+		; ------------------------------
+		; Increase CPU spending counter
+		mov edi,dword [nr_curthread]
+		shl edi,2
+		add edi,thread_CPUspending
+		inc dword [ds:edi]
+		jmp .dontSwitch
+
+.enoughOfThisThread:
+		; PROCESS HAS RAN ENOUGH TICKS,
+		; NOW WE SWITCH TO NEW PROCESS:
+		;
+		; zero the tick counter
+		mov bl,0
+		mov byte [ds:edi],bl
+		jmp .forceSwitch
+
+;------------------------------------------------------------
+; Switch to a new stack
+;------------------------------------------------------------
+.switchStack:
+		;
+		; Change to new stack pointer
+		mov eax,dword [nr_curthread]
+		mov edi,eax
+		shl edi,2
+		add edi,thread_esps
+		mov eax,dword [ds:edi]
+		; Copy stack pointer to EDI
+		mov edi,eax
+
+		;
+	;	CornerIndicator 0,' '
+
+		;-----------------------------------------------
+		; Setup thread data
+		call unbusyTSS ; set TSS in tasks.task[X] as non-busy
+		call tssNextThread
+
+		; ========================
+		; Cause task switch to next task
+		mov ax,word [nr_curthread]
+		shl ax,3 ; x8
+		add ax,TSSSEL_OFFS
+		mov byte [ds:.segm+0],al
+		mov byte [ds:.segm+1],ah
+
+		; JMP XX:YY
+		db 0xEA, 0x00, 0x00, 0x00, 0x00
+.segm:
+		db 0x34, 0x12
+		; We will come back here:
+;===================================================================================
+; ^^ END OF SCHEDULING MECHANISM
+; Skip task switch or continue after task switch
+;===================================================================================
+.dontSwitch

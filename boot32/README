@@ -1,0 +1,34 @@
+		JTMOS SYSTEM LOADER
+		-------------------
+
+Here is the system loader for JTMOS operating system.
+It loads a 512K image from disk, sets up protected mode
+and jumps to the 32-bit kernel image start, address 0x10000.
+The boot loader itself is located at 0x7C00, where BIOS
+loads the bootstrap loader.
+
+New 2003/9: Added support for IDE hard disks.
+JTMFS gone through a markable change which allowed it
+to support kernel images placed inside a file system
+and also a boot sector that hasn't been
+supported before.
+
+	Credits:
+	--------
+
+	Originally I learned alot from:
+	Example code of Protected Mode Tutorial
+	which was written by Till Gerken(most useful).
+
+	The hard disk loader part was entirely
+	done by me, by using HelpPC specifications,
+	and so on.
+
+	Later I modified and created it as
+	boot sector image by Jari Tuominen.
+
+	Thank you for your interest.
+
+	(C) 1999-2003 by Jari Tuominen.
+
+

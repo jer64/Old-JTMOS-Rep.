@@ -1,0 +1,33 @@
+
+
+                Official JTMOS libraries 4/99
+
+        JTMOS, Jari Tuominen's Multimedia Operating System
+        libraries are aimed to serve somethings like:
+
+        þ Libraries allows programmer to easily
+          create image/audio/code manipulation utilities
+          that serve needs of Commodore computers,
+          for example Commodore 64
+          (Multicolor,Hires,Bitmap interlaced mode).
+        þ JTMOS contains some graphic functions that
+          can be used in GUI creating to these applications
+          (Banked mode graphics, VESA functions in future)
+        þ JTMOS also contains some audio functions
+          but which are not quite ready to be used widely
+          (Sound Blaster support)
+        þ DJGPP mainly supported, but it JTMCONV.H/JTMFILE.H
+          header files are designed to work under Linux
+          or other Operating System platforms that are
+          non MS-DOS complaint
+
+
+       Signed: Jari Tapio Tuominen
+
+       Email: jer64@kolumbus.fi
+       WWW: http://www.kolumbus.fi/jer64/
+       (Underconstruction)
+
+
+
+

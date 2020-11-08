@@ -1,0 +1,27 @@
+
+	DRIVERS: JTMOS DRIVER SYSTEM
+	============================
+
+(C) 2003,2017 by Jari Tuominen (jari.t.tuominen@gmail.com)
+
+NEW:
+DEVSYS and DEVAPI have been integrated into the drivers folder.
+Calls are working now with driver_ -heading.
+Naming should be now thus more meaningful.
+
+Devices can be accessed:
+- by directly calling service function
+(devcall)
+- by making a remote call to service based
+device driver
+
+Although all this is done automatically
+by devcall, so the caller of device functions
+will not notice difference, excep that remote
+devices are abit slower, but more reliable,
+because these won't use kernel memory map,
+but instead an application memory map.
+
+
+
+

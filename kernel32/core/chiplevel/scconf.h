@@ -1,0 +1,5 @@
+//
+// KEEP ONLY DEFINES HERE, SO IT WORKS WITH NASM.
+//
+#define SCALL_INT_NR    0x7F
+

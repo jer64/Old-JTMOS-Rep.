@@ -1,0 +1,31 @@
+2. The Boot Sector
+The boot sector exists at sector 0 on the disk and contains the basic disk geometry, which is the set of
+information needed by the operating system to use the disk correctly. Whenever the disk is used, the
+information from the boot sector is read and any needed information is extracted from it. The boot
+sector on a DOS formatted floppy is a sequence of bytes that looks as follows:
+Starting byte Length (in bytes) Stored data
+0
+ 11
+ Ignore
+11
+ 2
+ Bytes per sector
+13
+ 1
+ Sectors per cluster
+14
+ 2
+ Number of reserved sectors
+16
+ 1
+ Number of FATs
+17
+ 2
+ Maximum number of root directory entries
+19
+ 2
+ Total sector count a
+21
+ 1
+ Ignore
+

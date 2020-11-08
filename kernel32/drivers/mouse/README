@@ -1,0 +1,8 @@
+PS/2 mouse driver
+-----------------
+
+NOTE: IS DEPENDENT ON KEYBOARD DRIVER'S FUNCTIONS.
+
+ps2mouse.c			PS/2 MOUSE DRIVER
+ps2mouse_interrupt.asm		-- ISR routine
+

@@ -1,0 +1,8 @@
+FLOPPY DISK DRIVER FOR JTMOS
+============================
+
+FDC reset function still needs to be fixed,
+so that it will work on older FDC controllers too.
+
+
+

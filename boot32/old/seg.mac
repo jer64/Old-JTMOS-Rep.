@@ -1,0 +1,37 @@
+; **** Descriptor macros ****
+; F.e. segdes dummy_descriptor,0xffff,0,0,0x9a,0xcf,0
+
+; Offsets for ...
+;
+; --                            SEGMENT SELECTOR TABLE:
+seg_length0_15  equ 0x00
+base_addr0_15   equ 0x02
+base_addr16_23  equ 0x04
+flags           equ 0x05
+access          equ 0x06
+base_addr24_31  equ 0x07
+; --                            INTERRUPT SELECTOR TABLE:
+offset0_15      equ 0x00
+selector0_15    equ 0x02
+zero_byte       equ 0x04
+flags2          equ 0x05
+offset16_31     equ 0x06
+
+%macro segdes 7
+%1:
+dw %2
+dw %3
+db %4
+db %5
+db %6
+db %7
+%endmacro
+
+%macro intdes 6
+%1:
+dw %2
+dw %3
+db %4
+db %5
+dw %6
+%endmacro

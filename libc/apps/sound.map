@@ -1,0 +1,509 @@
+Archive member included because of file (symbol)
+
+../lib/libcjtmos.a(audio.o)   sound.o (GetAudioPosition)
+../lib/libcjtmos.a(console.o)
+                              sound.o (getch1)
+../lib/libcjtmos.a(init.o)    ../libc/stlibc.o (init_libc)
+../lib/libcjtmos.a(malloc.o)  ../lib/libcjtmos.a(init.o) (malloc_init)
+../lib/libcjtmos.a(mallocMain.o)
+                              sound.o (free)
+../lib/libcjtmos.a(numbers.o)
+                              ../lib/libcjtmos.a(malloc.o) (p32)
+../lib/libcjtmos.a(postsup.o)
+                              ../lib/libcjtmos.a(audio.o) (PostmanPost)
+../lib/libcjtmos.a(printf.o)  sound.o (printf)
+../lib/libcjtmos.a(process.o)
+                              ../lib/libcjtmos.a(init.o) (abort)
+../lib/libcjtmos.a(scall.o)   ../lib/libcjtmos.a(console.o) (scall)
+../lib/libcjtmos.a(string.o)  ../lib/libcjtmos.a(mallocMain.o) (memset)
+../lib/libcjtmos.a(strncat.o)
+                              ../lib/libcjtmos.a(string.o) (strncat)
+../lib/libcjtmos.a(XXidentification.o)
+                              ../lib/libcjtmos.a(init.o) (XXidentificationString)
+../lib/libcjtmos.a(atexit.o)  ../lib/libcjtmos.a(init.o) (run_atexit)
+../lib/libcjtmos.a(ctypefamily.o)
+                              ../lib/libcjtmos.a(printf.o) (isdigit)
+../lib/libcjtmos.a(cvt.o)     ../lib/libcjtmos.a(string.o) (ecvt)
+../lib/libcjtmos.a(date.o)    ../lib/libcjtmos.a(process.o) (getdate)
+../lib/libcjtmos.a(file.o)    ../lib/libcjtmos.a(init.o) (__fnewstream)
+../lib/libcjtmos.a(filebuf.o)
+                              ../lib/libcjtmos.a(process.o) (fgetc)
+../lib/libcjtmos.a(floatconv.o)
+                              ../lib/libcjtmos.a(string.o) (_IO_strtod)
+../lib/libcjtmos.a(fseek.o)   ../lib/libcjtmos.a(file.o) (fseek)
+../lib/libcjtmos.a(modf.o)    ../lib/libcjtmos.a(cvt.o) (modf)
+../lib/libcjtmos.a(strchr.o)  ../lib/libcjtmos.a(string.o) (strchr)
+../lib/libcjtmos.a(dpi.o)     ../lib/libcjtmos.a(file.o) (getdevicenrbyname)
+../lib/libcjtmos.a(error.o)   ../lib/libcjtmos.a(filebuf.o) (panic)
+../lib/libcjtmos.a(fflush.o)  ../lib/libcjtmos.a(fseek.o) (fflush)
+../lib/libcjtmos.a(floor.o)   ../lib/libcjtmos.a(modf.o) (floor)
+../lib/libcjtmos.a(fprintf.o)
+                              ../lib/libcjtmos.a(error.o) (fprintf)
+../lib/libcjtmos.a(sprintf.o)
+                              ../lib/libcjtmos.a(fprintf.o) (_vsprintf)
+
+Allocating common symbols
+Common symbol       size              file
+
+stdout              0x4               ../lib/libcjtmos.a(file.o)
+___djgpp_exception_state_ptr
+                    0x4               ../lib/libcjtmos.a(process.o)
+MALSTRU             0x8               sound.o
+stdin               0x4               ../lib/libcjtmos.a(file.o)
+stderr              0x4               ../lib/libcjtmos.a(file.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD ../libc/stlibc.o
+LOAD sound.o
+
+.text           0x0000000080004000     0x62ec
+                0x0000000080004000                _start = .
+                0x0000000080004000                appregionstart = .
+ *(.text)
+ .text          0x0000000080004000       0x28 ../libc/stlibc.o
+                0x0000000080004000                libc_startup
+ .text          0x0000000080004028      0x1ff sound.o
+                0x0000000080004028                read_audio
+                0x00000000800041bc                main
+                0x000000008000409e                PlayMoreAudio
+                0x000000008000418e                play_audio
+                0x00000000800040e3                WaitUser
+ *fill*         0x0000000080004227        0x1 00
+ .text          0x0000000080004228       0x74 ../lib/libcjtmos.a(audio.o)
+                0x0000000080004228                InitAudio
+                0x0000000080004260                SendAudio
+                0x0000000080004244                GetAudioPosition
+ .text          0x000000008000429c      0x2a0 ../lib/libcjtmos.a(console.o)
+                0x00000000800043fc                putchar
+                0x0000000080004506                GetCTRL
+                0x00000000800042c6                gettextinfo
+                0x000000008000438e                clrscr
+                0x000000008000434c                wherey
+                0x0000000080004456                gets
+                0x0000000080004521                GetALT
+                0x000000008000443a                puts
+                0x00000000800043ec                putch
+                0x00000000800043d1                getch
+                0x00000000800043a9                getch1
+                0x0000000080004331                wherex
+                0x0000000080004315                textbackground
+                0x0000000080004367                delay
+                0x000000008000441d                gotoxy
+                0x00000000800042f9                textcolor
+                0x000000008000429c                ESCLOCK
+ .text          0x000000008000453c      0x177 ../lib/libcjtmos.a(init.o)
+                0x0000000080004622                init_libc
+                0x000000008000453c                libc_receiveargs
+                0x00000000800045de                libc_allocate_standard_streams
+ *fill*         0x00000000800046b3        0x1 00
+ .text          0x00000000800046b4      0x383 ../lib/libcjtmos.a(malloc.o)
+                0x00000000800047a5                malloc_reuse_chunk
+                0x00000000800046fc                malloc_create_free_chunk
+                0x0000000080004853                malloc_getamountfree
+                0x0000000080004845                malloc_lastchunk
+                0x0000000080004827                malloc_isfree
+                0x00000000800046d3                malloc_init
+                0x000000008000471c                malloc_create_hunt
+                0x0000000080004989                malloc_optimize
+                0x000000008000483a                malloc_nextchunk
+                0x000000008000473c                malloc_hunt
+                0x00000000800046b4                malloc_store_info
+                0x0000000080004819                malloc_getsize
+                0x0000000080004767                malloc_hunt_jump
+                0x000000008000489e                malloc_dumpchunkinfo
+ *fill*         0x0000000080004a37        0x1 00
+ .text          0x0000000080004a38       0xf6 ../lib/libcjtmos.a(mallocMain.o)
+                0x0000000080004a54                malloc
+                0x0000000080004a70                __malloc
+                0x0000000080004b17                __free
+                0x0000000080004a38                free
+ *fill*         0x0000000080004b2e        0x2 00
+ .text          0x0000000080004b30      0x101 ../lib/libcjtmos.a(numbers.o)
+                0x0000000080004bf1                pd32
+                0x0000000080004c11                pdz32
+                0x0000000080004b52                p16
+                0x0000000080004bbd                pdh32
+                0x0000000080004b30                p8
+                0x0000000080004b9d                p32z
+                0x0000000080004b75                p32
+ *fill*         0x0000000080004c31        0x3 00
+ .text          0x0000000080004c34       0x3e ../lib/libcjtmos.a(postsup.o)
+                0x0000000080004c34                PostmanPost
+ *fill*         0x0000000080004c72        0x2 00
+ .text          0x0000000080004c74      0x16c ../lib/libcjtmos.a(printf.o)
+                0x0000000080004c74                printf
+                0x0000000080004c8e                vprintf
+ .text          0x0000000080004de0      0x691 ../lib/libcjtmos.a(process.o)
+                0x00000000800052e9                MilSleep
+                0x0000000080004f50                GetCurrentTerminal
+                0x00000000800050ed                strerror
+                0x00000000800052b3                SwitchToThread
+                0x0000000080004de0                SetTerminalOwner
+                0x0000000080005101                WaitProcessTermination
+                0x00000000800051cf                cexecEx
+                0x0000000080005467                getpagesize
+                0x000000008000533c                getpid
+                0x0000000080004e50                GetThreadUniquePID
+                0x000000008000509f                getc
+                0x00000000800051b3                cexec
+                0x0000000080004ea7                enable_irq
+                0x000000008000511d                system
+                0x00000000800053df                GetThreadCount
+                0x0000000080005439                sleep
+                0x0000000080004e6c                diskChange
+                0x000000008000536e                GetThreadPriority
+                0x00000000800050c6                abort
+                0x0000000080004f35                NewTerminal
+                0x0000000080004f9e                globalcopy
+                0x00000000800050bc                stackavail
+                0x000000008000532c                ExitThread
+                0x0000000080005142                bgexec
+                0x0000000080005364                SetThreadPriority
+                0x000000008000525d                kill
+                0x0000000080004fd9                IdentifyThread
+                0x0000000080005083                chdir
+                0x0000000080005305                Sleep
+                0x00000000800052ce                GetTickCount
+                0x0000000080004efc                OutputTerminalKeyboardBuffer
+                0x0000000080004f19                InputTerminalKeyboardBuffer
+                0x0000000080004edf                CopyTerminal
+                0x00000000800053c3                GetThreadMemoryUsage
+                0x0000000080004f81                SetThreadTerminal
+                0x0000000080005012                receiveMessage
+                0x0000000080005267                KillThread
+                0x00000000800053a6                GetThreadName
+                0x0000000080004e19                CreateTerminal
+                0x0000000080004f65                GetThreadTerminal
+                0x00000000800050af                getchar
+                0x00000000800053fa                SleepSecond
+                0x0000000080005349                GetCurrentThread
+                0x0000000080005224                GetAmountFree
+                0x0000000080005066                getcwd
+                0x000000008000538a                GetThreadSpending
+                0x000000008000522e                GetProgramStart
+                0x0000000080004e88                setint
+                0x000000008000502e                sendMessage
+                0x000000008000515e                bgexecEx
+                0x0000000080004fbe                GetSeconds
+                0x0000000080005283                exit
+                0x0000000080004ff6                GetThreadPID
+                0x0000000080005242                GetMemorySize
+                0x0000000080004ec3                GetCursorLocation
+                0x0000000080004e34                SwitchToThreadEx
+                0x000000008000504b                startMessageBox
+                0x00000000800050f7                clock
+                0x0000000080004dfd                GetTerminalOwner
+                0x0000000080005238                GetProgramEnd
+ *fill*         0x0000000080005471        0xf 00
+ .text          0x0000000080005480       0x2c ../lib/libcjtmos.a(scall.o)
+                0x0000000080005480                scall
+ .text          0x00000000800054ac      0xda8 ../lib/libcjtmos.a(string.o)
+                0x0000000080005591                strcpy
+                0x0000000080005de5                vt2202asc
+                0x00000000800061ff                StretchPrint
+                0x00000000800056a4                str2int
+                0x0000000080005647                memcpy
+                0x0000000080005dc7                asc2vt220
+                0x00000000800060b9                sdouble
+                0x00000000800054ac                bzero
+                0x0000000080005e37                hex2int
+                0x0000000080005a41                _sdec32
+                0x00000000800057da                shex16
+                0x0000000080005f4b                readStringEx
+                0x000000008000607d                strtod
+                0x0000000080006090                pdouble
+                0x000000008000604e                atof
+                0x000000008000566f                strcat
+                0x000000008000582c                shex8
+                0x0000000080005ef6                strstr
+                0x0000000080005cab                CountWords
+                0x00000000800059de                sdec32
+                0x0000000080005eaf                strncmp
+                0x0000000080005713                shex32z
+                0x00000000800054c1                bcopy
+                0x0000000080006065                printfloat
+                0x0000000080005626                memset
+                0x0000000080006060                stringfloat
+                0x0000000080006029                skipSpaces
+                0x00000000800055c5                strcmp
+                0x00000000800054d7                GetRunningNumber
+                0x00000000800054e7                sptstr
+                0x0000000080005c83                isValidString
+                0x0000000080005fe9                seekTowardEnd
+                0x0000000080005d16                strcpyarg
+                0x0000000080005694                dec2int
+                0x0000000080005788                shex32
+                0x000000008000603e                atoi
+                0x000000008000556c                strlen
+                0x0000000080005857                sdec32z
+                0x0000000080005a2e                sudec32
+                0x0000000080005e03                hexchar2int
+ .text          0x0000000080006254       0x8c ../lib/libcjtmos.a(strncat.o)
+                0x0000000080006254                strncat
+ .text          0x00000000800062e0       0x20 ../lib/libcjtmos.a(atexit.o)
+                0x00000000800062e0                run_atexit
+                0x00000000800062e5                atexit
+ .text          0x0000000080006300      0x214 ../lib/libcjtmos.a(ctypefamily.o)
+                0x00000000800064a1                islower
+                0x0000000080006300                tolower
+                0x0000000080006440                ispunct
+                0x0000000080006490                isspace
+                0x000000008000644a                isxdigit
+                0x00000000800064ba                isupper
+                0x000000008000639a                isalpha
+                0x000000008000650a                isgraph
+                0x000000008000638a                isalnum
+                0x0000000080006500                isprint
+                0x00000000800063f0                isdigit
+                0x0000000080006436                iscntrl
+                0x0000000080006347                toupper
+ .text          0x0000000080006514      0x2a3 ../lib/libcjtmos.a(cvt.o)
+                0x0000000080006532                fcvt
+                0x0000000080006514                ecvt
+ *fill*         0x00000000800067b7        0x1 00
+ .text          0x00000000800067b8       0x8e ../lib/libcjtmos.a(date.o)
+                0x00000000800067cc                asctime
+                0x00000000800067b8                utime
+                0x00000000800067bd                utimes
+                0x0000000080006820                settimeofday
+                0x00000000800067d1                ctime
+                0x00000000800067c2                mktime
+                0x000000008000682a                getdate
+                0x0000000080006816                gettimeofday
+                0x00000000800067fe                localtime
+                0x0000000080006808                time
+                0x00000000800067db                strftime
+                0x00000000800067e5                strptime
+                0x00000000800067f4                gmtime
+                0x00000000800067ef                tzset
+ *fill*         0x0000000080006846        0x2 00
+ .text          0x0000000080006848      0x428 ../lib/libcjtmos.a(file.o)
+                0x0000000080006c54                _formatDrive
+                0x00000000800069a5                fgets
+                0x000000008000695f                remove
+                0x0000000080006adf                lseek
+                0x0000000080006932                rename
+                0x0000000080006a88                write
+                0x0000000080006888                fexist
+                0x00000000800068f2                fsizeof
+                0x0000000080006860                ferror
+                0x0000000080006a6a                read
+                0x000000008000694f                unlink
+                0x000000008000697b                __fnewstream
+                0x0000000080006afd                fread
+                0x00000000800068c6                StringCheck
+                0x000000008000685b                clearerr
+                0x0000000080006848                putc
+                0x0000000080006b60                fwrite
+                0x0000000080006874                rewind
+                0x0000000080006898                __fexist
+                0x000000008000686a                fileno
+                0x0000000080006aa6                open
+                0x0000000080006c3c                formatDrive
+                0x0000000080006a11                fputs
+                0x0000000080006ac3                close
+ .text          0x0000000080006c70      0x322 ../lib/libcjtmos.a(filebuf.o)
+                0x0000000080006f3b                setlinebuf
+                0x0000000080006f51                setvbuf
+                0x0000000080006f1a                setbuffer
+                0x0000000080006c70                rbuf
+                0x0000000080006cdf                __fenlargebuf
+                0x0000000080006d57                fgetc
+                0x0000000080006e16                fputc
+                0x0000000080006ca4                wbuf
+                0x0000000080006ef7                setbuf
+ *fill*         0x0000000080006f92        0x2 00
+ .text          0x0000000080006f94     0x2d1e ../lib/libcjtmos.a(floatconv.o)
+                0x0000000080007a55                _IO_strtod
+                0x0000000080008b13                _IO_dtoa
+ *fill*         0x0000000080009cb2        0x2 00
+ .text          0x0000000080009cb4       0xa0 ../lib/libcjtmos.a(fseek.o)
+                0x0000000080009cb4                fseek
+ .text          0x0000000080009d54       0x1e ../lib/libcjtmos.a(modf.o)
+                0x0000000080009d54                modf
+ *fill*         0x0000000080009d72        0x2 00
+ .text          0x0000000080009d74      0x105 ../lib/libcjtmos.a(strchr.o)
+                0x0000000080009d74                strrchr
+                0x0000000080009d87                strchr
+ *fill*         0x0000000080009e79        0x3 00
+ .text          0x0000000080009e7c       0xe2 ../lib/libcjtmos.a(dpi.o)
+                0x0000000080009f0a                getdevicename
+                0x0000000080009f43                getcurdev
+                0x0000000080009ee9                registerNewDevice
+                0x0000000080009e7c                DeviceCall
+                0x0000000080009f27                getdevicenrbyname
+ *fill*         0x0000000080009f5e        0x2 00
+ .text          0x0000000080009f60       0x8d ../lib/libcjtmos.a(error.o)
+                0x0000000080009fd2                perror
+                0x0000000080009f60                panic
+                0x0000000080009f8e                LIBCERROR
+ *fill*         0x0000000080009fed        0x3 00
+ .text          0x0000000080009ff0       0x33 ../lib/libcjtmos.a(fflush.o)
+                0x0000000080009ff0                fflush
+ *fill*         0x000000008000a023        0x1 00
+ .text          0x000000008000a024       0x24 ../lib/libcjtmos.a(floor.o)
+                0x000000008000a024                floor
+ .text          0x000000008000a048       0x94 ../lib/libcjtmos.a(fprintf.o)
+                0x000000008000a048                fprintf
+                0x000000008000a06a                vfprintf
+ .text          0x000000008000a0dc      0x210 ../lib/libcjtmos.a(sprintf.o)
+                0x000000008000a0f9                vsprintf
+                0x000000008000a114                _vsprintf
+                0x000000008000a0dc                sprintf
+                0x000000008000a2ec                etext = .
+                0x000000008000a2ec                _etext = .
+
+.data           0x000000008000a2ec      0x8d0
+ *(.data)
+ *fill*         0x000000008000a2ec       0x14 00
+ .data          0x000000008000a300       0x84 ../lib/libcjtmos.a(process.o)
+                0x000000008000a320                SysCWD
+                0x000000008000a300                SysSearchPath
+ .data          0x000000008000a384        0x4 ../lib/libcjtmos.a(XXidentification.o)
+                0x000000008000a384                XXidentificationString
+ *fill*         0x000000008000a388       0x18 00
+ .data          0x000000008000a3a0      0x148 ../lib/libcjtmos.a(floatconv.o)
+ *(.rodata*)
+ .rodata.str1.1
+                0x000000008000a4e8       0xa2 sound.o
+ *fill*         0x000000008000a58a        0x6 00
+ .rodata.cst8   0x000000008000a590        0x8 sound.o
+ .rodata.str1.4
+                0x000000008000a598       0xab sound.o
+ .rodata.str1.1
+                0x000000008000a643        0xc ../lib/libcjtmos.a(console.o)
+ *fill*         0x000000008000a64f        0x1 00
+ .rodata.str1.4
+                0x000000008000a650       0x20 ../lib/libcjtmos.a(init.o)
+ .rodata.str1.4
+                0x000000008000a670       0x2a ../lib/libcjtmos.a(malloc.o)
+ .rodata.str1.1
+                0x000000008000a69a       0x35 ../lib/libcjtmos.a(malloc.o)
+ *fill*         0x000000008000a6cf        0x1 00
+ .rodata.str1.4
+                0x000000008000a6d0       0x77 ../lib/libcjtmos.a(mallocMain.o)
+ .rodata.str1.1
+                0x000000008000a747        0x2 ../lib/libcjtmos.a(numbers.o)
+ .rodata.str1.1
+                0x000000008000a749        0xc ../lib/libcjtmos.a(postsup.o)
+ *fill*         0x000000008000a755        0x3 00
+ .rodata.str1.4
+                0x000000008000a758       0x23 ../lib/libcjtmos.a(postsup.o)
+ .rodata.str1.1
+                0x000000008000a77b        0x7 ../lib/libcjtmos.a(printf.o)
+ *fill*         0x000000008000a782        0x2 00
+ .rodata.str1.4
+                0x000000008000a784       0x81 ../lib/libcjtmos.a(process.o)
+ .rodata.str1.1
+                0x000000008000a805        0x1 ../lib/libcjtmos.a(process.o)
+ *fill*         0x000000008000a806        0x2 00
+ .rodata        0x000000008000a808       0x8c ../lib/libcjtmos.a(string.o)
+ .rodata.str1.1
+                0x000000008000a894       0x31 ../lib/libcjtmos.a(string.o)
+ *fill*         0x000000008000a8c5        0x3 00
+ .rodata.str1.4
+                0x000000008000a8c8       0x36 ../lib/libcjtmos.a(XXidentification.o)
+ .rodata.str1.1
+                0x000000008000a8fe       0x5e ../lib/libcjtmos.a(ctypefamily.o)
+ .rodata.cst4   0x000000008000a95c        0x4 ../lib/libcjtmos.a(cvt.o)
+ .rodata.cst8   0x000000008000a960       0x10 ../lib/libcjtmos.a(cvt.o)
+ .rodata.str1.4
+                0x000000008000a970       0x62 ../lib/libcjtmos.a(file.o)
+ .rodata.str1.1
+                0x000000008000a9d2        0xa ../lib/libcjtmos.a(file.o)
+ .rodata.str1.1
+                0x000000008000a9dc       0x17 ../lib/libcjtmos.a(filebuf.o)
+ *fill*         0x000000008000a9f3        0x5 00
+ .rodata.cst8   0x000000008000a9f8       0x38 ../lib/libcjtmos.a(floatconv.o)
+ .rodata.cst4   0x000000008000aa30       0x24 ../lib/libcjtmos.a(floatconv.o)
+ .rodata        0x000000008000aa54       0xd0 ../lib/libcjtmos.a(floatconv.o)
+ .rodata.str1.1
+                0x000000008000ab24        0xf ../lib/libcjtmos.a(floatconv.o)
+ .rodata.str1.1
+                0x000000008000ab33        0xb ../lib/libcjtmos.a(dpi.o)
+ *fill*         0x000000008000ab3e        0x2 00
+ .rodata.str1.4
+                0x000000008000ab40       0x28 ../lib/libcjtmos.a(dpi.o)
+ .rodata.str1.1
+                0x000000008000ab68       0x4c ../lib/libcjtmos.a(error.o)
+ .rodata.str1.1
+                0x000000008000abb4        0x8 ../lib/libcjtmos.a(sprintf.o)
+                0x000000008000abbc                edata = .
+                0x000000008000abbc                _edata = .
+
+.bss            0x000000008000abbc      0x2d4
+ *(.bss)
+ .bss           0x000000008000abbc        0x4 sound.o
+                0x000000008000abbc                audioOffs
+ .bss           0x000000008000abc0      0x10c ../lib/libcjtmos.a(audio.o)
+ *fill*         0x000000008000accc       0x14 00
+ .bss           0x000000008000ace0      0x12c ../lib/libcjtmos.a(init.o)
+                0x000000008000ace0                _libc_argc
+                0x000000008000ace4                _libc_argv
+ .bss           0x000000008000ae0c        0x8 ../lib/libcjtmos.a(process.o)
+                0x000000008000ae0c                errno
+                0x000000008000ae10                __djgpp_set_sigint_key
+ .bss           0x000000008000ae14        0x4 ../lib/libcjtmos.a(string.o)
+ .bss           0x000000008000ae18        0x4 ../lib/libcjtmos.a(atexit.o)
+ *fill*         0x000000008000ae1c        0x4 00
+ .bss           0x000000008000ae20       0x50 ../lib/libcjtmos.a(cvt.o)
+ .bss           0x000000008000ae70        0x8 ../lib/libcjtmos.a(floatconv.o)
+ *(COMMON)
+ COMMON         0x000000008000ae78        0x8 sound.o
+                                          0x0 (size before relaxing)
+                0x000000008000ae78                MALSTRU
+ COMMON         0x000000008000ae80        0x4 ../lib/libcjtmos.a(process.o)
+                                          0x0 (size before relaxing)
+                0x000000008000ae80                ___djgpp_exception_state_ptr
+ COMMON         0x000000008000ae84        0xc ../lib/libcjtmos.a(file.o)
+                                          0x0 (size before relaxing)
+                0x000000008000ae84                stdout
+                0x000000008000ae88                stdin
+                0x000000008000ae8c                stderr
+                0x000000008000ae90                end = .
+                0x000000008000ae90                _end = .
+                0x000000008000ae90                appregionend = .
+LOAD ../lib/libcjtmos.a
+OUTPUT(sound.bin binary)
+
+.comment        0x0000000000000000      0x3c1
+ .comment       0x0000000000000000       0x1f ../libc/stlibc.o
+ .comment       0x000000000000001f       0x1f sound.o
+ .comment       0x000000000000003e       0x1f ../lib/libcjtmos.a(audio.o)
+ .comment       0x000000000000005d       0x1f ../lib/libcjtmos.a(console.o)
+ .comment       0x000000000000007c       0x1f ../lib/libcjtmos.a(init.o)
+ .comment       0x000000000000009b       0x1f ../lib/libcjtmos.a(malloc.o)
+ .comment       0x00000000000000ba       0x1f ../lib/libcjtmos.a(mallocMain.o)
+ .comment       0x00000000000000d9       0x1f ../lib/libcjtmos.a(numbers.o)
+ .comment       0x00000000000000f8       0x1f ../lib/libcjtmos.a(postsup.o)
+ .comment       0x0000000000000117       0x1f ../lib/libcjtmos.a(printf.o)
+ .comment       0x0000000000000136       0x1f ../lib/libcjtmos.a(process.o)
+ .comment       0x0000000000000155       0x1f ../lib/libcjtmos.a(scall.o)
+ .comment       0x0000000000000174       0x1f ../lib/libcjtmos.a(string.o)
+ .comment       0x0000000000000193       0x1f ../lib/libcjtmos.a(strncat.o)
+ .comment       0x00000000000001b2       0x1f ../lib/libcjtmos.a(XXidentification.o)
+ .comment       0x00000000000001d1       0x1f ../lib/libcjtmos.a(atexit.o)
+ .comment       0x00000000000001f0       0x1f ../lib/libcjtmos.a(ctypefamily.o)
+ .comment       0x000000000000020f       0x1f ../lib/libcjtmos.a(cvt.o)
+ .comment       0x000000000000022e       0x1f ../lib/libcjtmos.a(date.o)
+ .comment       0x000000000000024d       0x1f ../lib/libcjtmos.a(file.o)
+ .comment       0x000000000000026c       0x1f ../lib/libcjtmos.a(filebuf.o)
+ .comment       0x000000000000028b       0x1f ../lib/libcjtmos.a(floatconv.o)
+ .comment       0x00000000000002aa       0x1f ../lib/libcjtmos.a(fseek.o)
+ .comment       0x00000000000002c9       0x1f ../lib/libcjtmos.a(modf.o)
+ .comment       0x00000000000002e8       0x1f ../lib/libcjtmos.a(strchr.o)
+ .comment       0x0000000000000307       0x1f ../lib/libcjtmos.a(dpi.o)
+ .comment       0x0000000000000326       0x1f ../lib/libcjtmos.a(error.o)
+ .comment       0x0000000000000345       0x1f ../lib/libcjtmos.a(fflush.o)
+ .comment       0x0000000000000364       0x1f ../lib/libcjtmos.a(floor.o)
+ .comment       0x0000000000000383       0x1f ../lib/libcjtmos.a(fprintf.o)
+ .comment       0x00000000000003a2       0x1f ../lib/libcjtmos.a(sprintf.o)
+
+.note.GNU-stack
+                0x0000000000000000        0x0

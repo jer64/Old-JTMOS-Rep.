@@ -1,0 +1,27 @@
+OUTPUT_FORMAT("binary")              /* "binary" */
+ENTRY(_start)
+SECTIONS
+{
+    . = 0x0020000;
+
+    .text . :
+    {
+	*(.text)
+        *(.rodata*)
+	etext = .; _etext = .;
+    }
+    .data . :
+    {
+	*(.data)
+	edata = .; _edata = .;
+    }
+    .bss 0x100000:
+    {
+        *(COMMON)
+        _sbss = .;
+        *(.bss)
+        _ebss = .;
+    }
+    kernelend = .; _kernelend = .;
+}
+

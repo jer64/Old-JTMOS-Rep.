@@ -1,0 +1,46 @@
+#!/bin/bash
+#
+# Note: MAX 3 applications can be include at once!
+#
+echo "Building utilities for the utilities disk ..."
+rm -f *.o
+rm -f *.bin
+#make
+#cd gui ; make ; cd ..
+#cd brandy/src ; make ; cd ../..
+
+## Amusement
+#make -f snake.mak
+#make -f vgaplasma.mak
+#make -f picture.mak
+
+## IMPORTANT THINGS
+make -f sqsh.mak
+make -f ls.mak
+make -f mkdir.mak
+
+## Some tools
+make -f writing.mak
+make -f install.mak
+make -f top.mak
+make -f ps.mak
+make -f sqdsk.mak
+make -f clear.mak
+make -f ren.mak
+make -f cp.mak
+make -f rm.mak
+make -f mkfs.mak
+make -f cat.mak
+#cp tekstia.txt tekstia.bin
+
+## MEMORY STUFF
+make -f memconfig.mak
+
+## MISC STUFF
+#make -f plasma.mak
+#make -f diskaudio.mak
+#make -f sound.mak
+make -f readfloppy.mak
+
+./addtail.sh *.bin
+

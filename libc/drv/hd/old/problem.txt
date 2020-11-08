@@ -1,0 +1,26 @@
+<mImz> zZzZzZzZzzZZZZ
+> zzzzzzzzzzzzzzzz
+> how can I make a structure of type STR1 inside STR1 defination?
+> darn
+<mImz> ?
+<mImz> lang ?
+> C
+> typedef struct { long pie; TROLL *next_troll; TROLL *prev_troll; } 
+TROLL;
+<mImz> ermm
+<mImz> well and where is the prob?
+*** Mode change "-b *!*@*.inetia.pl" on channel #Linux by DDB
+*** Mode change "-b *!*@*.inetia.pl" on channel #Linux by zefix
+*** Mode change "-b *!*@*.inetia.pl" on channel #Linux by Xcds
+> ^^ that doesn't work
+<mImz> well maybe it should look like this :
+<gimbo> you need to typedef struct TROLL_T { long pie; TROLL_T 
+*next_troll;
++TROLL_T *prev_troll;} TROLL;
+<mImz> typedef struct troll TROLL;
+<gimbo> uhm, struct TROLL_T in there even
+<gimbo> coz at the point you use the first TROLL TROLL ain't a type
+<gimbo> or a struct, coz it's an anonymous struct at that point
+<aferist> I'm having sound problems can anyone help?
+<mImz> =] smart
+

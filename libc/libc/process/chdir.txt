@@ -1,0 +1,70 @@
+// Change directory
+int chdir(const char *path)
+{
+	static POSTMANCMD post;
+	int r;
+	char *p;
+	int i,i2,ack;
+
+	// Ignore error paths
+	//
+	if(path==NULL)return 1;
+
+	// Ignore "blabla/../blabla/.."
+	// and accept "." and ".."
+	if(strcmp(path, ".") && strcmp(path, "..")
+		&&
+		(strchr(path, "/.")) )
+		// Illegal path
+		return 1;
+
+	// ----------------------------------------------
+	// chdir
+	//
+
+	// Build packet
+	post.id=PCMD_CHDIR;
+	post.par1=path;
+	// Post it
+	r = PostmanPost(&post);
+
+	// ----------------------------------------------
+	// If chdir was OK:
+	// Generate current work directory string.
+	if(!r)
+	{
+		// "." or ".."
+		if(!strcmp(path,".")) goto past;
+		//
+		if(!strcmp(path,".."))
+		{
+			// Remove one subdir from path string
+			for(p=SysCWD+(strlen(SysCWD)-1); p!=SysCWD; p--)
+			{
+				if(*p=='/' && p>SysCWD)
+				{
+					*p=0; break;
+				}
+			}
+			// To root dir level if neccesary
+			if(p==SysCWD) { p++; *p=0; }
+			goto past;
+		}
+
+		// Regular case:
+		if(path[0]=='/')
+		{
+			// Root / => Change whole string
+			strncpy(SysCWD, path, 90);
+		}
+		else
+		{
+			// Subdirectory lala/ => Add / + path
+			if( SysCWD[strlen(SysCWD)-1]!='/' )
+				strcat(SysCWD, "/");
+			strcat(SysCWD, path);
+		}
+	}
+past:
+	return r;
+}

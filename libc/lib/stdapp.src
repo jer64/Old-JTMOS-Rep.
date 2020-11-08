@@ -1,0 +1,24 @@
+OUTPUT_FORMAT("binary")              /* "binary" */
+ENTRY(_start)
+SECTIONS
+{ .text 0x80004000 :
+    {
+	_start = .;
+	appregionstart = .;
+        *(.text)
+	etext = .; _etext = .;
+    }
+    .data . :
+    {	
+        *(.data)
+	*(.rodata*)
+	edata = .; _edata = .;
+    }
+    .bss SIZEOF(.data) + ADDR(.data) :
+    {	*(.bss)
+	*(COMMON)
+	end = .; _end = .;
+	appregionend = .;
+    }
+}
+	

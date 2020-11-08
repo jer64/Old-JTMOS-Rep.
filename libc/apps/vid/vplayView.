@@ -1,0 +1,119 @@
+//
+#include <stdio.h>
+#include "vplay.h"
+#include "vplayView.h"
+
+//
+VIDHDR hdr;
+
+// Decode a single block of frame
+int decodeBlock(FILE *f, BYTE *buf, int tx,int ty, int bs)
+{
+	int x,y,i,i2,i3,i4,step,ad,ad2;
+
+	//--------------------------------------------------
+	// Get block ID
+	i = fgetc(f);
+	if(i!=0xA0)
+	{
+		//
+		setvmode(3);
+		//
+		fprintf(stderr, "Incorrect block detected.\n");
+		// Incorrect block
+		exit(!);
+		return 1;
+	}
+
+	// Get step (pixel size)
+	step = fgetc(f);
+
+	//--------------------------------------------------
+	// Draw block
+	for(y=ty; y<ty+bs; y+=step)
+	{
+		//
+		ad = hdr.width*y;
+
+		//
+		for(x=tx; x<tx+bs; x+=step)
+		{
+			//
+			buf[ad+x] = fgetc(f);
+		}
+	}
+
+	//
+	return 0;
+}
+
+// Code a single frame
+int decodeFrame(FILE *f, BYTE *buf, int w,int h,int bpp)
+{
+	int x,y,i,i2,i3,i4,step,bs;
+
+	// Get frame beginning
+	i = fgetc(f);
+	if(i!=0xB0)
+		// End frame
+		return 1;
+
+	// Get block size
+	bs = fgetc(f);
+
+	//
+	for(y=0; y<h; y+=step)
+	{
+		//
+		for(x=0; x<w; x+=step)
+		{
+			//
+			if( decodeBlock(f, buf, x,y, bs) )
+			{
+				// Incorrect block detected
+				fprintf(stderr, "Incorrect block detected.\n");
+				//
+				return 1;
+			}
+		}
+	}
+
+	//
+	return 0;
+}
+
+// Video player start
+int startPlayer(const char *src)
+{
+	int frame,i,i2,i3,i4;
+	BYTE *buf;
+	FILE *f;
+
+	//
+	f=fopen(src, "rb");
+	if(f==NULL)
+		return 1;
+
+	// Read header
+	fread(&hdr, sizeof(VIDHDR),1, f);
+
+	// Allocate frame buffer
+	buf = malloc(320*200);
+
+	// Go through all frames
+	for(frame=0; ; frame++)
+	{
+		//
+		if( decodeFrame(f, buf, 320,200,8) )
+			// end of frames
+			break;
+
+		// View frame
+		vf(buf);
+	}
+
+	// Return OK
+	return 0;
+}
+
+

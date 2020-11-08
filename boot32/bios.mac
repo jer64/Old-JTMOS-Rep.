@@ -1,0 +1,28 @@
+;
+;       Tiny package of macro definitions for BIOS calls.
+;       (C) 1998-2018 by Jari Tuominen (jari.t.tuominen@gmail.com).
+;
+;       NASM required!
+;
+%macro                  puts 1
+                        ;
+                        mov si,%1
+%%looppi:
+                        mov al,byte [cs:si]
+                        cmp al,0
+                        je %%outtahere
+                        putchar byte [cs:si]
+                        inc si
+                        jmp %%looppi
+%%outtahere:
+                        ;
+%endmacro               ;
+
+%macro                  putchar 1
+                        ;
+                        mov al,%1  ;MARK
+                        mov bx,0x0e;COLOR
+                        mov ah,0x0e;FUNCID
+                        int 0x10
+                        ;
+%endmacro               ;

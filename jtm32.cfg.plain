@@ -1,0 +1,6 @@
+{
+        size                    1440
+        boot32/boot.bin         0 1
+        kernel32/kernel32.bin   1 1
+}
+

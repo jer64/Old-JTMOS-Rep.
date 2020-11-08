@@ -1,0 +1,32 @@
+init and /etc/inittab
+
+    * init is process 1;
+    * everything is a descendant.
+    * specifies daemons that are absolutely essential for any kind of multiuser operation.
+          o getty: accept login.
+
+ S0:2345:respawn:/sbin/getty ttyS0 DT9600 vt100
+ || |  | |     | |         | ^^^^^^^^^^^^^^^^^^ command line arguments
+ || |  | |     | ^^^^^^^^^^^ name of daemon
+ || |  | ^^^^^^^ action if it dies 
+ || ^^^^ run levels that invoke it
+ ^^ name
+
+                + run levels 2-5
+                + name of service: S0
+                + restart if it dies.
+                + make a getty on ttyS0, 9600 baud, emulating a vt100.
+                + see /etc/gettytab for details on DT9600. 
+          o prefdm: X display manager
+
+ x:5:respawn:/etc/X11/prefdm -nodaemon
+ | | |     | |             | ^^^^^^^^^ arguments
+ | | |     | ^^^^^^^^^^^^^^^ command
+ | | ^^^^^^^ restart if dies 
+ | ^ run level 5 only
+ ^ name
+
+                + run level 5 only
+                + restart if dies.
+                + -nodaemon: don't detach console (helps init know when to restart it) 
+

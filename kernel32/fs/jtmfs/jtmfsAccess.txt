@@ -1,0 +1,69 @@
+//
+// All functions use structure FILE as a key structure to determine situation.
+//
+//
+// Introduction
+//
+// Meaning of FILEAPI to the kernel is not very important,
+// instead it's markability to all applications working is
+// quite vital. In order to any applications could even
+// access the filesystem without directly accessing the data
+// on disk, is virtually impossible(when thinking logically)
+// without FILEAPI.
+//
+// FILEAPI simplifies the work of applications to access data
+// which resides on any block device which has been
+// successfully detected by the kernel.
+//
+// FILEAPI aims into UNIX variant of implementation of filesystem.
+// Despite it's present weaksides and incompleteness,
+// it's something that every "sane" kernel must have in order
+// to function properly.
+//
+// Very simplistic view of how JTMFS relies on JTMFAT when
+// ordering vital information from the allocation system database,
+// also known as FAT.
+//
+// DEVICE<-DEVAPI/SYS<-JTMFS<-FILEAPI
+//         	  	|
+//         	  	V
+// DEVICE<-DEVAPI/SYS<-JTMFAT
+//
+//
+// Update: I gave up the idea of creating simplistic
+// FILE I/O, instead there'll be :
+// fopen,fclose,fread,fwrite,fexpand
+// which mostly do the very low level handling of
+// the file system.
+// The buffering that prevents system to lock up
+// durring system call overheating is done at
+// LIBCs instead.
+// This means that applications will be doing
+// more work, although this does not make it
+// any harder to program applications,
+// since LIBCs always do the actual extra work.
+//
+// Special Note:
+// Fileapi.c now handles ONLY the file system
+// related jobs, f.e. /dev to device redirection
+// is now done at heart/io, as fileapi.c still
+// is a part of the JTMFS package.
+//
+// FILEAPI is only called by one thread,
+// it is the POSTMAN -thread which reads
+// data to sereval applications,
+// but does only one request at a time.
+//
+// kernel32/heart/io is used for application's
+// usage, these functions only make requests
+// of data sends, after applications have called
+// the proper system calls via LIBC,
+// their LIBCs start waiting for the arrival
+// of the data from the postman.
+//
+// Note: functions beginning with "Pioneer"
+// are pioneric functions, which means
+// those functions are not there to be
+// used in real shipping version of the JTMOS.
+//
+// For example:

@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "Archiving JTMOS($(date +%d/%m/%y))..."
+rm /usr/jtm32-$(date +%d%m%y).tar.gz
+cd /usr
+tar c --gzip ~jer64/jtm > jtm32-$(date +%d%m%y).tar.gz
+ls -la jtm32-$(date +%d%m%y).tar.gz

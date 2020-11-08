@@ -1,0 +1,13 @@
+hdInit();
+sb_init(0);
+fdc_init();
+gus_init();
+SerialMouseInit();
+serial_init();
+lpt_init();
+ps2mouse_init();
+slip_init();
+
+
+
+

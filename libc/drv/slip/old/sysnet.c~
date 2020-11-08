@@ -1,0 +1,184 @@
+// =========================================================
+// slipStack.c - slip packet receiver/sender
+// (C) 2002-2003 by Jari Tuominen(jari.tuominen@kanetti.net)
+// =========================================================
+#include <stdio.h>
+#include "slip.h"
+#include "slipLogin.h"
+#include "slipStack.h"
+
+// Slip stack main loop
+void slipStack(void)
+{
+	DWORD flags;
+
+	//
+	printk("JTMOS slip stack 1.0\n");
+
+        //
+        ThreadCreateStack(&SysNetThread, 1024*16);
+        SysNetThread.pid =
+		create_thread(SysNetThread.stack, SysNetThread.l_stack,
+			SysNet);
+
+	// max. 31 characters
+	IdentifyThread(SysNetThread.pid, "KSYSNET");
+
+	//
+	enable();
+}
+
+// A Service Call, will call services such as httpd, ftpd, telnetd, and so on.
+void SysNet_ServiceCall(void)
+{
+	int v;
+
+	//
+	v = oravahttpd_service(); if(v) return;
+	v = telnetd_service(); if(v) return;
+	v = leecher(); if(v) return;
+}
+
+//
+void SysNet_ServiceInit(void)
+{
+	// For debugging
+	uip_listen(80);
+	// For HTTPD
+	oravahttpd_init();
+	// For TELNETD
+	telnetd_init();
+	// For leecher
+	leecherInit();
+}
+
+// Receive packet to packet buffer
+// len = max. bytes to store in BYTE *buf
+// Return value: amount of bytes in the received packet
+int ReceivePacket(BYTE *buf, int len)
+{
+	return slip_recv_packet(buf, len);
+}
+
+void TransmitPacket(BYTE *buf, int len)
+{
+	slip_send_packet(buf, len);
+}
+
+/*-----------------------------------------------------------------------------------*/
+int SysNet(void)
+{
+	int ti,initial_ti,virgin;
+	BYTE i, arptimer;
+
+	SetThreadPriority(GetCurrentThread(),
+			THREAD_PRIORITY_NORMAL);
+	SetThreadTerminal(GetCurrentThread(), ID_VIRTUAL_TERMINAL_5);
+	textcolor(15); textbackground(BLACK);
+	printk("SysNet - Internet Traffic Management Process\n");
+	printk("Waiting ... ");
+	WaitSystemStart();
+	printk("\rReady.             \r");
+
+	// Initialize
+	uip_init();
+	SysNet_ServiceInit();
+
+	// Internet services & TCP/IP & SLIP loop
+	for(arptimer=0,ti=rtc_getseconds(),initial_ti=ti,virgin=1; ;)
+	{
+		// Skip internet services if we are not yet online
+		if(!slipOnline)
+			goto sleepy;
+
+		//==============================================================
+		// We are now online first time since start up?
+		if(virgin)
+		{
+			// Report
+			printk("sysnet.c: We are online, let's go to work\n");
+			// Devirgin
+			virgin=0;
+		}
+
+		// Call leecher triggerer
+		leecherTriggerer();
+
+		/* Let the XXXX network device driver read an entire IP packet
+		   into the uip_buf. If it must wait for more than 0.5 seconds, it
+		   will return with the return value 0. If so, we know that it is
+		   time to call upon the uip_periodic(). Otherwise, the tapdev has
+		   received an IP packet that is to be processed by uIP. */
+		uip_len = slip_recv_packet(uip_buf, 1006);
+
+		// Debug report
+		if(uip_len)
+		{
+			printk("sysnet.c: Packet received, size=%d bytes\n",
+				uip_len);
+		}
+
+		// Process packet
+		if(uip_len)
+		{
+			//
+			uip_len = PacketReceived(uip_buf, uip_len);
+#ifdef UIP_ENABLED
+			uip_process(UIP_DATA);
+#endif
+			if(uip_len>0)
+			{
+				//
+				printk("sysnet.c: Sending packet(%d bytes)\n", uip_len);
+				// Send out IP packet
+				slip_send_packet(uip_buf, uip_len);
+			}
+		}
+
+		// Call socket engine
+		SocketEngine();
+
+		// Space to test connect
+		if(getch1()==32)
+		{
+			printk(">> Test connect to 192.168.0.10:80 ");
+			ConnectHost(IPAD(192,168,0,10), 80);
+			printk("\n");
+		}
+
+		/* Call the ARP timer function every 10 seconds. */
+		//if(++arptimer == 20)
+		if( (GetSeconds()-ti)>=10 )
+		{
+			DWORD ip[1];
+
+			//
+			ti = GetSeconds();
+
+#ifdef UIP_ENABLED
+			// 2) ARP TIMER
+			for(i=0; i<UIP_CONNS; i++)
+			{
+				uip_periodic(i);
+				if(uip_len>0)
+				{
+					printk("sysnet.c: Sending packet(II, %d bytes)\n",
+						uip_len);
+					// Send out an IP packet
+					slip_send_packet(uip_buf, uip_len);
+				}
+			}
+#endif
+		}
+
+		//==============================================================
+sleepy:
+		// Save CPU time
+		for(i=0; i<1; i++)
+			idle_moment();
+	}
+
+	printk("< >> SYSNET PROCESS TERMINATION >\n");
+	exit_thread();
+}
+

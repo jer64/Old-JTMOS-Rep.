@@ -1,0 +1,10 @@
+interrupt_descriptor_table: ;*** here begins the IDT ***;
+
+idt_start:      dw                      idt_size,0,0
+intdes interrupt_0,employed_int,code32_idx,0,0x8e,0
+
+idt_size equ $-(interrupt_0)
+
+;        db      0eah            ; opcode for far jump (to set CS correctly)
+;        dw      0x10000,code32_idx
+

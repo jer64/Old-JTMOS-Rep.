@@ -1,0 +1,39 @@
+;
+; Exception Handling Low Level ASM Code
+;
+; ASMexception_0 => exception_0
+;
+
+%macro SAFE 1
+			cli
+			cld
+			mov ax,0x10
+			mov ds,ax
+			mov es,ax
+			mov fs,ax
+			mov gs,ax
+			mov ss,ax
+			mov esp,0x7BFF
+			; We skip safe handler
+			jmp .past
+
+;;;; Very Safe Exception Indicator
+			mov edx,0xB8000
+			mov eax,0x12345678
+			mov ecx,1000
+.loop2:
+			mov dword [ds:edx],eax
+			add edx,4
+			dec ecx
+			jnz .loop2
+.loop:
+			mov al,0
+			mov dx,0x3c8
+			out dx,al
+			mov al,0xff
+			out dx,al
+			jmp .loop
+;;;;
+.past:
+			jmp %1
+%endmacro

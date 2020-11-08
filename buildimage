@@ -1,0 +1,8 @@
+#!/bin/bash
+cd dosker; make; cd ..
+cd boot32; make; cd ..
+cd imgsrc; make; cd ..
+imgsrc/img jtm32.cfg jtm32.img
+ls -la jtm32.img
+md5sum   jtm32.img
+md5sum   jtm32.img > jtm32.md5

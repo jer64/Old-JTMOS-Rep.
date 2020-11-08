@@ -1,0 +1,23 @@
+;
+;       Tiny package of macro definitions for BIOS calls.
+;       (C) 1998-2003 by Jari Tuominen.
+;
+;       NASM required!
+;
+%macro                  puts 1
+                        ; INT 21,9 - Print String
+			mov ax,cs
+			mov ds,ax
+                        mov dx,%1
+			mov ah,9
+			int 0x21
+                        ;
+%endmacro               ;
+
+%macro                  putchar 1
+                        ;
+			mov ah,6
+                        mov dl,%1 ; character
+                        int 0x21
+                        ;
+%endmacro               ;

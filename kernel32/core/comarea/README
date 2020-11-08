@@ -1,0 +1,32 @@
+COMAREA - KERNEL<->Application Communication Interface
+------------------------------------------------------
+
+COMAREA, the term comes from, "Communication Area".
+The basic idea of COMAREA was to decrease the amount
+of systemcalls there'll be from applications.
+This method aims into increaing the system performance
+by not locking up the system which could be caused by
+the overheat of systemcalls.
+
+The basic functions of COMAREA are:
+- Receiving data from the application
+- Sending data to the application
+
+COMAREA usually resides below the application stack,
+and above the application's code.
+See following description:
+
+[ APPLICATION STACK ]
+
+    [ COMAREA ]
+
+[ APPLICATION CODE ]
+
+One of the hardest jobs COMAREA has to do is
+the translation of application's memory space
+into the global address space.
+Without doing this, COMAREA system couldn't
+really access the application's COMAREA in
+any way.
+
+

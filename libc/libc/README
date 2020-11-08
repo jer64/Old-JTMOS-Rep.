@@ -1,0 +1,23 @@
+		JTMOS LIBC
+		==========
+
+This is the source code directory of JTMOS LIBC.
+
+Many dummy functions are featured,
+that mostly don't do anything but return NULL or 0.
+^^^^^^^^^^^TODO^^^^^^^^^^^
+
+JTMOS LIBC attempts to emulate MSDOS & DJGPP & Turbo C
+environment, this features conio functions.
+Also some Win32 emulation might be likely
+to be featured in future. Also UNIX support is emphasized.
+
+JTMOS defaults to:
+#define MSDOS
+#define DJGPP
+
+MSDOS C programs usually get ported easiest, as UNIX C
+programs which use open/close, etc. UNIX functions might
+probably not work at all.
+That will be fixed eventually when the JTMOS FS gets better.
+

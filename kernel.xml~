@@ -1,0 +1,23 @@
+<OS>
+	<InitSystemPass2_XML>
+			<initSystemLogging>
+			</initSystemLogging>
+			<fdc_init>
+			</fdc_init>
+			<rd_init>
+			</rd_init>
+			<hd_init>
+			</hd_init>
+			<partition_table_support_init>
+			</partition_table_support_init>
+
+			<hwdet>
+			</hwdet>
+
+			<register_shell>
+			</register_shell>
+			<StartShellProcess>
+			</StartShellProcess>
+	</InitSystemPass2_XML>
+</OS>
+

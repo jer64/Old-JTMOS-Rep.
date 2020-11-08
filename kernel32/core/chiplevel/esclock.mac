@@ -1,0 +1,24 @@
+;; esclock debugging subroutine
+%macro esclock 0
+			push dx
+			push ax
+			mov	dx,0x60
+			; Wait until ESC is released
+%%.loop1:
+			in	al,dx
+			cmp	al,1
+			je	%%.loop1
+			; Wait until ESC is pressed
+%%.loop2:
+			in	al,dx
+			cmp	al,1
+			jne	%%.loop2
+%%.loop3:
+			; Wait until ESC is released
+			in	al,dx
+			cmp	al,1
+			je	%%.loop3
+			pop ax
+			pop dx
+%endmacro
+

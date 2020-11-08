@@ -1,0 +1,109 @@
+In file included from init/kernel32.h:8,
+                 from jtmfs/flexFat.c:5:
+init/cpu.h:8:7: warning: no newline at end of file
+In file included from init/system.h:19,
+                 from init/kernel32.h:20,
+                 from jtmfs/flexFat.c:5:
+init/sysmisc.h:4: warning: data definition has no type or storage class
+In file included from init/kernel32.h:26,
+                 from jtmfs/flexFat.c:5:
+heart/debug/lock.h:7: warning: parameter names (without types) in function declaration
+In file included from init/kernel32.h:32,
+                 from jtmfs/flexFat.c:5:
+heart/systemcalls/fcntlbits.h:12:1: warning: "O_RDONLY" redefined
+heart/systemcalls/fcntlbits.h:4:1: warning: this is the location of the previous definition
+heart/systemcalls/fcntlbits.h:13:1: warning: "O_WRONLY" redefined
+heart/systemcalls/fcntlbits.h:5:1: warning: this is the location of the previous definition
+heart/systemcalls/fcntlbits.h:14:1: warning: "O_RDWR" redefined
+heart/systemcalls/fcntlbits.h:6:1: warning: this is the location of the previous definition
+heart/systemcalls/fcntlbits.h:85:1: warning: "EDEADLOCK" redefined
+In file included from init/stdio.h:3,
+                 from mm/mm.h:5,
+                 from mm/malloc.h:6,
+                 from init/kernel32.h:19,
+                 from jtmfs/flexFat.c:5:
+fapi/filedef.h:93:1: warning: this is the location of the previous definition
+In file included from init/kernel32.h:32,
+                 from jtmfs/flexFat.c:5:
+heart/systemcalls/fcntlbits.h:144:1: warning: "EUCLEAN" redefined
+In file included from init/stdio.h:3,
+                 from mm/mm.h:5,
+                 from mm/malloc.h:6,
+                 from init/kernel32.h:19,
+                 from jtmfs/flexFat.c:5:
+fapi/filedef.h:92:1: warning: this is the location of the previous definition
+In file included from jtmfs/flexFat.c:5:
+init/kernel32.h:51:1: warning: "panic" redefined
+init/kernel32.h:50:1: warning: this is the location of the previous definition
+init/kernel32.h:60:1: warning: "sys" redefined
+init/kernel32.h:58:1: warning: this is the location of the previous definition
+jtmfs/flexFat.c: In function `flexFatInit':
+jtmfs/flexFat.c:53: warning: passing arg 1 of `dmemset' from incompatible pointer type
+jtmfs/flexFat.c: In function `clearFatContents':
+jtmfs/flexFat.c:96: warning: passing arg 1 of `illegal' makes integer from pointer without a cast
+jtmfs/flexFat.c:112: warning: passing arg 1 of `dmemset' from incompatible pointer type
+jtmfs/flexFat.c: In function `flexAllocateFat':
+jtmfs/flexFat.c:120: warning: passing arg 1 of `illegal' makes integer from pointer without a cast
+jtmfs/flexFat.c:129: warning: passing arg 1 of `illegal' makes integer from pointer without a cast
+jtmfs/flexFat.c:131: warning: passing arg 1 of `dmemset' from incompatible pointer type
+jtmfs/flexFat.c:140: warning: passing arg 1 of `illegal' makes integer from pointer without a cast
+jtmfs/flexFat.c: At top level:
+jtmfs/flexFat.c:271: warning: type mismatch with previous implicit declaration
+jtmfs/flexFat.c:88: warning: previous implicit declaration of `flexRWFAT'
+jtmfs/flexFat.c:271: warning: `flexRWFAT' was previously implicitly declared to return `int'
+jtmfs/flexFat.c: In function `flexRWFAT':
+jtmfs/flexFat.c:304: warning: assignment from incompatible pointer type
+jtmfs/flexFat.c:307: warning: comparison of distinct pointer types lacks a cast
+jtmfs/flexFat.c: At top level:
+mm/mmAlloc.h:5: warning: array `free_caller' assumed to have one element
+mm/mmAlloc.h:6: warning: array `malloc_caller' assumed to have one element
+init/kernel32.h:70: warning: array `testdrv' assumed to have one element
+init/kernel32.h:71: warning: array `boot_bin' assumed to have one element
+In file included from init/kernel32.h:8,
+                 from jtmfs/flexCorruption.c:2:
+init/cpu.h:8:7: warning: no newline at end of file
+In file included from init/system.h:19,
+                 from init/kernel32.h:20,
+                 from jtmfs/flexCorruption.c:2:
+init/sysmisc.h:4: warning: data definition has no type or storage class
+In file included from init/kernel32.h:26,
+                 from jtmfs/flexCorruption.c:2:
+heart/debug/lock.h:7: warning: parameter names (without types) in function declaration
+In file included from init/kernel32.h:32,
+                 from jtmfs/flexCorruption.c:2:
+heart/systemcalls/fcntlbits.h:12:1: warning: "O_RDONLY" redefined
+heart/systemcalls/fcntlbits.h:4:1: warning: this is the location of the previous definition
+heart/systemcalls/fcntlbits.h:13:1: warning: "O_WRONLY" redefined
+heart/systemcalls/fcntlbits.h:5:1: warning: this is the location of the previous definition
+heart/systemcalls/fcntlbits.h:14:1: warning: "O_RDWR" redefined
+heart/systemcalls/fcntlbits.h:6:1: warning: this is the location of the previous definition
+heart/systemcalls/fcntlbits.h:85:1: warning: "EDEADLOCK" redefined
+In file included from init/stdio.h:3,
+                 from mm/mm.h:5,
+                 from mm/malloc.h:6,
+                 from init/kernel32.h:19,
+                 from jtmfs/flexCorruption.c:2:
+fapi/filedef.h:93:1: warning: this is the location of the previous definition
+In file included from init/kernel32.h:32,
+                 from jtmfs/flexCorruption.c:2:
+heart/systemcalls/fcntlbits.h:144:1: warning: "EUCLEAN" redefined
+In file included from init/stdio.h:3,
+                 from mm/mm.h:5,
+                 from mm/malloc.h:6,
+                 from init/kernel32.h:19,
+                 from jtmfs/flexCorruption.c:2:
+fapi/filedef.h:92:1: warning: this is the location of the previous definition
+In file included from jtmfs/flexCorruption.c:2:
+init/kernel32.h:51:1: warning: "panic" redefined
+init/kernel32.h:50:1: warning: this is the location of the previous definition
+init/kernel32.h:60:1: warning: "sys" redefined
+init/kernel32.h:58:1: warning: this is the location of the previous definition
+jtmfs/flexCorruption.c: In function `ffCheck':
+jtmfs/flexCorruption.c:57: warning: initialization makes pointer from integer without a cast
+jtmfs/flexCorruption.c:70: warning: assignment makes integer from pointer without a cast
+jtmfs/flexCorruption.c:71: warning: assignment makes pointer from integer without a cast
+jtmfs/flexCorruption.c: At top level:
+mm/mmAlloc.h:5: warning: array `free_caller' assumed to have one element
+mm/mmAlloc.h:6: warning: array `malloc_caller' assumed to have one element
+init/kernel32.h:70: warning: array `testdrv' assumed to have one element
+init/kernel32.h:71: warning: array `boot_bin' assumed to have one element

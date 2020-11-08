@@ -1,0 +1,239 @@
+// =========================================================
+// SQUIRREL DISK EXTRACTER
+// (C) 2002-2003 by Jari Tuominen(jari.tuominen@kanetti.net)
+// =========================================================
+#include <stdio.h>
+#include <jtmos/directdisk.h> // readblock,writeblock,getdevnrbyname
+#include "sqdsk.h"
+#define SECAREA 1024*2
+//#define SQDSK_USEFLOPPY
+
+// Variables
+static int usingDevice=0;
+static int deviceNr=0;
+static char tmp[512]={0}; // for block buffer
+static int blockNr=0; // current block
+static int blockOffs=0; // current offset
+static int dataOffs=0;
+static int seloffs=0;
+
+// Seek device to X location
+void block_seek(int offs)
+{
+	// Set offset
+	blockOffs = offs+seloffs;
+	// Force re-read on next operation
+	blockNr=-1;
+}
+
+// Read current location(device)
+void read_location(void)
+{
+	//
+	blockNr = blockOffs/512;
+	readblock(deviceNr, blockNr, tmp);
+}
+
+// Get a single char 
+int block_getchar(void)
+{
+	int chr;
+
+	//
+	if( blockNr==-1 || blockNr!=(blockOffs/512) )
+	{
+		read_location();
+	}
+
+	//
+	chr = tmp[blockOffs & 0x1FF];
+	blockOffs++;
+	return chr;
+}
+
+// Process header part of the archive
+int read_header(FILE *f)
+{
+	int i;
+
+	// skip past secarea
+	if(!usingDevice)
+		fseek(f, SECAREA, SEEK_SET);
+		else
+		block_seek(SECAREA);
+
+	// Device or file
+	if(usingDevice)
+	{
+		for(i=0; i<8; i++) sqdsk.identifier[i]=block_getchar();
+	}
+	else
+		fread(sqdsk.identifier, 8,1, f);
+	sqdsk.identifier[8]=0;
+
+	// Check type
+	if( strcmp(sqdsk.identifier,"SQARC520") )
+	{
+		printf("Not a valid squirrel archive.\n");
+		printf("Identifier = '");
+		for(i=0; i<8; i++)
+			printf("%c", sqdsk.identifier[i]);
+		printf("'\n");
+		return 1;
+	}
+	else
+	{
+		//printf("Archive format identified correctly.\n");
+	}
+
+	//
+	if(usingDevice)
+	{
+		sqdsk.nr_files = block_getchar() | (block_getchar()<<8);
+	}
+	else
+	{
+		sqdsk.nr_files = fgetc(f) | (fgetc(f)<<8);
+	}
+
+	//
+	return 0;
+}
+
+// Read entry descriptors (directory of all files)
+int read_entrydescs(FILE *f)
+{
+	int i,i2,i3,i4;
+	char *t;
+
+	// Allocate & init
+	sqdsk.fe = malloc(8*sqdsk.nr_files);
+	for(i=0; i<sqdsk.nr_files; i++)
+	{
+		sqdsk.fe[i] = malloc(sizeof(FE));
+		memset(sqdsk.fe[i], 0, sizeof(FE));
+	}
+
+	// Read all entries
+	for(i=0; i<sqdsk.nr_files; i++)
+	{
+		// Device or file?
+		if(usingDevice)
+		{
+			// Read single entry
+			t = sqdsk.fe[i];
+			for(i2=0; i2<sizeof(FE); i2++)
+			{
+				t[i2] = block_getchar();
+			}
+		}
+		else
+		{
+			// Read single entry
+			fread(sqdsk.fe[i], sizeof(FE),1, f);
+		}
+	}
+
+	// Data offset to beginning of data area
+	dataOffs = blockOffs;
+
+	// Report
+	printf("Found %d files.\n", sqdsk.nr_files);
+	//printf("Figure: Data offset is at 0x%x.\n", dataOffs);
+	return 0;
+}
+
+// Extract entries according file descriptors
+int extract_entries(FILE *f)
+{
+	int i,i2,i3,i4,d,len;
+	FILE *f,f2;
+	BYTE *temp;
+	FE *e;
+
+	//
+	for(i=0; i<sqdsk.nr_files; i++)
+	{
+		// Get entry
+		e = sqdsk.fe[i];
+		// Get Length
+		len = e->length;
+
+		// Write file
+		f2=fopen(e->fname, "wb");
+		if(!f2)
+		{
+			printf("Write error on file '%s'.\n", e->fname);
+			break;
+		}
+		printf("Writing %s (size=%d bytes, offset=0x%x) ",
+			e->fname, len, e->offset);
+		for(i4=0; i4<len; i4++)
+		{
+			//
+			if(!usingDevice)d=fgetc(f);
+			else d=block_getchar();
+			if(!usingDevice && d==EOF)break;
+			fputc(d,f2);
+			if( !(i4&1023) ) printf(".");
+		}
+
+		//
+		printf("\n");
+		fclose(f2);
+
+		//-------------------------------------------------------------
+		//
+		temp = malloc(len);
+		f=fopen(
+
+		// *Temporary solution* Set byte fixed size.
+		_fsetsize(sqdsk.fe[i]->fname, sqdsk.fe[i]->length);
+nowrite:
+	}
+}
+
+// Returns 0 if no error, non-zero if error
+int extract_archive(const char *fname)
+{
+	FILE *f;
+	int rv;
+
+	//
+	rv=0;
+
+	//
+	if(!usingDevice)
+	{
+		f=fopen(fname, "rb");
+		if(f==NULL)
+		{
+			printf("file not found '%s'\n", fname);
+			return 10;
+		}
+	}
+	if(read_header(f))
+	{
+		rv=1;
+		goto skip;
+	}
+
+	if(!sqdsk.nr_files)
+	{
+		printf("No files found.\n");
+		rv=2;
+		goto skip;
+	}
+
+	//
+	read_entrydescs(f);
+
+	//
+	extract_entries(f);
+
+skip:
+	//
+	if(!usingDevice) fclose(f);
+	return rv;
+}
+

@@ -1,0 +1,7 @@
+process/
+
+Process memory mapping, process execution, creation, spawning, forking,
+process handling like termination, priority changes, manipulation and etc.
+
+There is a few things that are symbolically linked from the kernel.
+So kernel must be always featured.

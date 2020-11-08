@@ -1,0 +1,31 @@
+		SLIP STACK
+		----------
+
+SLIP stands for Serial Line Internet Protocol,
+it is used for very primitive and simple
+internet connections. SLIP protocol was easy
+to implement and work on, this is why it was
+chosen for the JTMOS project too.
+
+Making a PPP stack would've been considerably
+more complex thing to do.
+
+The current SLIP stack ...
+
+- Uses configuration from configuration
+file "slip.cfg", there is settings for
+which serial port to use, and
+at which BPS to use the serial port at.
+
+- Contains queues for RECEIVED PACKETS
+and TRANSMITTABLE PACKETS.
+
+- Registers itself as "slip" device
+
+- Contains device interface,
+accepts RAW packet receive/transmit
+functions
+
+
+
+

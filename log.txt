@@ -1,0 +1,45 @@
+cd kernel32; make imp; make linkit; cd ..
+make[1]: Entering directory '/home/vai/jtm/kernel32'
+make[1]: Leaving directory '/home/vai/jtm/kernel32'
+make[1]: Entering directory '/home/vai/jtm/kernel32'
+./autogen.pl > generated.mak
+make linkit -f generated.mak
+make[2]: Entering directory '/home/vai/jtm/kernel32'
+---: linking kernel into a binary file
+ld init/start.o ./mm/mmBit.o ./mm/scanmem.o ./mm/mmEntry.o ./mm/mm.o ./mm/paging.o ./mm/mmTest.o ./mm/mmAlloc.o ./drivers/driver_diskchange.o ./drivers/driver_lock.o ./drivers/driver_flush.o ./drivers/driver_remdevcall.o ./drivers/driver_api_devcall.o ./drivers/driver_api.o ./drivers/driver_rw.o ./drivers/driver_init.o ./drivers/driver_sys.o ./drivers/driver_BlockCache.o ./drivers/fardcall.o ./drivers/partsup/partsup.o ./drivers/keyboard/keyb.o ./drivers/keyboard/scanasc.o ./drivers/keyboard/keybISR.o ./drivers/lpt/lpt.o ./drivers/ega/ega.o ./drivers/ega/ega_ansi.o ./drivers/audio/audio.o ./drivers/floppy/fdc_dev2.o ./drivers/floppy/fdcCache.o ./drivers/floppy/fdc.o ./drivers/floppy/fdcser.o ./drivers/floppy/fdc_dev.o ./drivers/floppy/fdc_interrupt.o ./drivers/slip/slipKernelMain.o ./drivers/slip/slipDev.o ./drivers/slip/slipLogin.o ./drivers/slip/slipService.o ./drivers/slip/slipConfig.o ./drivers/slip/slipStack.o ./drivers/slip/slip.o ./drivers/term/term.o ./drivers/null/null.o ./drivers/mouse/SerialMouseDev.o ./drivers/mouse/ps2mouse.o ./drivers/mouse/SerialMouse.o ./drivers/mouse/mouse.o ./drivers/mouse/SerialMouse_interrupt.o ./drivers/mouse/ps2mouse_interrupt.o ./drivers/pci/pci.o ./drivers/vmware/vmware.o ./drivers/vga/sysvga.o ./drivers/vga/vga.o ./drivers/vga/sysgfx.o ./drivers/alt/alt.o ./drivers/serial/serial_dev.o ./drivers/serial/serial.o ./drivers/serial/serial_interrupt.o ./drivers/gus/gus.o ./drivers/gus/gus_interrupt.o ./drivers/sb/sb_dev.o ./drivers/sb/sb.o ./drivers/sb/sb_interrupt.o ./drivers/ramdisk/ramser.o ./drivers/ramdisk/ramdisk.o ./drivers/hd/hdDetect.o ./drivers/hd/hdDev.o ./drivers/hd/hdMisc.o ./drivers/hd/hdBlockRW.o ./drivers/hd/hdRW.o ./drivers/hd/hdIRQ.o ./drivers/hd/lowLBA.o ./drivers/hd/lowCHS.o ./drivers/hd/hdReset.o ./drivers/hd/hdService.o ./drivers/hd/chs.o ./drivers/hd/hd.o ./drivers/hd/hdInt.o ./drivers/hd/cache/hdCacheEntry.o ./drivers/hd/cache/hdCacheFlush.o ./drivers/hd/cache/hdCache.o ./drivers/hd/cache/hdCacheAccess.o ./drivers/cmos/cmos.o ./drivers/cmos/rtc.o ./drivers/cmos/cmos_dev.o ./drivers/tcp/tcp.o ./drivers/tcp/ts.o ./drivers/tcp/www_server.o ./drivers/tcp/ConnectHost.o ./drivers/tcp/PacketDump.o ./drivers/tcp/rawpacket.o ./drivers/tcp/SendPacket.o ./drivers/tcp/tcpConfig.o ./drivers/tcp/tcpDev.o ./drivers/tcp/icmp.o ./drivers/tcp/tcpMain.o ./drivers/tcp/tcpService.o ./drivers/tcp/ip.o ./drivers/tcp/tcpchksum.o ./drivers/tcp/socket.o ./drivers/zero/zero.o ./core/speaker/speaker.o ./core/asm/memcpy.o ./core/asm/aslib.o ./core/dispadmin/dispadmin.o ./core/statusline/statusline.o ./core/speed/speed.o ./core/centralprocess/centralprocessInit.o ./core/centralprocess/exeidentificationmodule.o ./core/centralprocess/initsystem.o ./core/centralprocess/centralprocess.o ./core/centralprocess/reboot.o ./core/centralprocess/panic.o ./core/centralprocess/LaunchApp.o ./core/centralprocess/scheduler.o ./core/centralprocess/errors.o ./core/centralprocess/centralprocessMain.o ./core/centralprocess/gpf.o ./core/random/random.o ./core/fixal/fixal.o ./core/useradmin/useradmin.o ./core/lowlevel/memcpy.o ./core/lowlevel/strchr.o ./core/lowlevel/postcommands.o ./core/lowlevel/pit.o ./core/lowlevel/threads.o ./core/lowlevel/tss.o ./core/lowlevel/sprintf.o ./core/lowlevel/llexception.o ./core/lowlevel/gdtmanipulation.o ./core/lowlevel/scs2.o ./core/lowlevel/corruption.o ./core/lowlevel/stack.o ./core/lowlevel/printf.o ./core/lowlevel/lock.o ./core/lowlevel/debug.o ./core/lowlevel/intdb.o ./core/lowlevel/intgdt.o ./core/lowlevel/exception.o ./core/lowlevel/threads_db.o ./core/lowlevel/delay.o ./core/lowlevel/int.o ./core/lowlevel/coprocessor_not_found.o ./core/lowlevel/string.o ./core/lowlevel/logging.o ./core/lowlevel/ansiwin.o ./core/lowlevel/threadSwitch.o ./core/lowlevel/io.o ./core/lowlevel/msgbox.o ./core/lowlevel/dma.o ./core/lowlevel/scs.o ./core/lowlevel/system_call.o ./core/lowlevel/IdleThread.o ./core/lowlevel/hexdump.o ./core/lowlevel/exec.o ./core/lowlevel/dfunc.o ./core/lowlevel/scs_devices.o ./core/lowlevel/coprocessor.o ./core/lowlevel/mkstack.o ./core/lowlevel/scall_handler.o ./core/lowlevel/llint.o ./core/lowlevel/scall.o ./core/lowlevel/launchapp.o ./core/lowlevel/llexc.o ./core/environment/envint.o ./core/environment/env.o ./core/hwdet/hwdet.o ./init/buffer.o ./init/sysglvar.o ./init/parse.o ./init/sysapp.o ./init/keropt.o ./init/vesa.o ./init/init.o ./init/callapp.o ./init/biosfunc.o ./init/system.o ./init/foo.o ./init/test.o ./init/sysmisc.o ./init/xml/XML.o ./utils/mst.o ./fs/fgetsize.o ./fs/feof.o ./fs/fopen.o ./fs/_virtualfilesystem_devcall.o ./fs/ftell.o ./fs/_close.o ./fs/_write.o ./fs/filedes.o ./fs/_mkdir.o ./fs/_lseek.o ./fs/_fgetsize.o ./fs/stat.o ./fs/_opensocket.o ./fs/_open.o ./fs/_stat.o ./fs/filebuf.o ./fs/_read.o ./fs/fseek.o ./fs/api.o ./fs/fflush.o ./fs/fsetsize.o ./fs/fclose.o ./fs/_chdir.o ./fs/filedesbuf.o ./fs/fat12/msdosio.o ./fs/jtmfs/jtmfsPath.o ./fs/jtmfs/fslast.o ./fs/jtmfs/directfileaccess.o ./fs/jtmfs/fname_translation.o ./fs/jtmfs/isJTMFS.o ./fs/jtmfs/jtmfs.o ./fs/jtmfs/fsfind.o ./fs/jtmfs/dirdbWalk.o ./fs/jtmfs/flexCorruption.o ./fs/jtmfs/fsdev.o ./fs/jtmfs/dirdbFind.o ./fs/jtmfs/mount.o ./fs/jtmfs/createfat.o ./fs/jtmfs/fsadd.o ./fs/jtmfs/flexFat.o ./fs/jtmfs/dirdbAccess.o ./fs/jtmfs/format.o ./fs/jtmfs/dirdbInformation.o ./fs/jtmfs/WriteChain.o ./fs/jtmfs/writeDir.o ./fs/jtmfs/fsdos.o ./fs/jtmfs/dirdb.o ./fs/jtmfs/jtmfsAccessInit.o ./fs/jtmfs/root.o ./fs/jtmfs/fswalk.o ./fs/jtmfs/jtmfsAccess.o ./fs/jtmfs/fsaddblocks.o ./fs/jtmfs/ReadChain.o ./fs/jtmfs/jtmfat.o ./fs/jtmfs/dir.o ./fs/jtmfs/dirdbCorruption.o  -o kernel32.bin --oformat binary -Map kernel32.map -Tkernel32.src -Ttext 0x10000  -m elf_i386
+make[2]: Leaving directory '/home/vai/jtm/kernel32'
+make[1]: Leaving directory '/home/vai/jtm/kernel32'
+./buildimage
+make[1]: Entering directory '/home/vai/jtm/dosker'
+../boot32/kchecksum dosker32.bin > kchecksum.inc
+nasm -f bin dosker.asm -o dosker.com
+make[1]: Leaving directory '/home/vai/jtm/dosker'
+make[1]: Entering directory '/home/vai/jtm/boot32'
+---: getting checksum of the kernel image
+gcc -o blocksum blocksum.c
+gcc -o kchecksum kchecksum.c
+#./blocksum
+./kchecksum ../kernel32/kernel32.bin > kchecksum.inc
+---: compiling kernel loader
+nasm -f bin boot.asm
+nasm -f bin nonsysdisk.asm
+mv boot boot.bin
+mv nonsysdisk nonsysdisk.bin
+ls -la boot.bin
+-rw-rw-r-- 1 vai vai 4409 heinä  12 01:01 boot.bin
+ls -la nonsysdisk.bin
+-rw-rw-r-- 1 vai vai 840 heinä  12 01:01 nonsysdisk.bin
+make[1]: Leaving directory '/home/vai/jtm/boot32'
+make[1]: Entering directory '/home/vai/jtm/imgsrc'
+gcc -O -o img img.c
+cp img ..
+make[1]: Leaving directory '/home/vai/jtm/imgsrc'
+Diskimage Size = 1440K
+boot32/boot.bin -> 0,1 (Track/Sector)
+     (Offs = 0x00000000 -- 0)
+     End at Track #0 - OK!
+kernel32/kernel32.bin -> 1,1 (Track/Sector)
+     (Offs = 0x00002400 -- 9216)
+Error: cannot find Partial Image File 'kernel32/kernel32.bin'.
+-rw-r--r-- 1 vai vai 1474560 heinä  11 21:03 jtm32.img
+5682cd23bb5d071def7c206d38b3c2bc  jtm32.img

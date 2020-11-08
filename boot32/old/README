@@ -1,0 +1,22 @@
+		JTMOS SYSTEM LOADER
+
+Here is the system loader for JTMOS operating system.
+It loads a 512K image from disk, sets up protected mode
+and jumps to the 32-bit kernel image start, address 0x10000.
+The boot loader itself is located at 0x7c00, where BIOS
+loads the bootstrap loader.
+
+      Credits:
+
+              Originally I learned alot from:
+              Example code of Protected Mode Tutorial
+              which was written by Till Gerken(most useful).
+
+              Later I modified and created it as
+              boot sector image by Jari Tuominen.
+
+      Thank you for your interest.
+
+      (C) 1999,2002 by Jari Tuominen, see file
+      COPYING for more information.
+

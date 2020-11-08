@@ -1,0 +1,48 @@
+#ifndef	__INCLUDED_THREADS_H__
+#define	__INCLUDED_THREADS_H__
+
+//
+#define N_MAX_THREADS 5000
+
+//
+typedef struct
+{
+ //
+ long pid;     // process ID
+ BYTE *stack;  // stack pointer
+ long l_stack; // stack length
+}THREAD;
+
+// Thread Management
+//
+DWORD new_thread(void);
+void set_thread(DWORD _handle1,DWORD _stackoffs,DWORD _process_pc);
+
+// Data that is allocated by the thread management code
+extern DWORD nr_curthread,nr_threads;
+// ASM code
+extern DWORD render_thread_stack(DWORD _stack_offs,DWORD _pc,DWORD pid);
+
+//
+extern BYTE thread_codedescs[(N_MAX_THREADS*8)];
+extern BYTE thread_datadescs[(N_MAX_THREADS*8)];
+extern DWORD nr_threads,nr_curthread;
+extern BYTE thread_states[N_MAX_THREADS];
+extern DWORD thread_esps[N_MAX_THREADS];
+extern char *thread_name[N_MAX_THREADS]; // NULL = no name(name/identification)
+extern BYTE thread_tick[N_MAX_THREADS];
+
+//
+DWORD create_thread(DWORD _pr_stack,DWORD _stacksize,DWORD _pr_pc);
+
+//
+void ThreadCreateStack(THREAD *t,long _stacksize);
+void ThreadDestroyStack(THREAD *t);
+void IdentifyThread(DWORD pid,char *_ident);
+DWORD GetCurrentThread(void);
+//
+BYTE GetThreadPriority(DWORD pid);
+void SetThreadPriority(DWORD pid,BYTE prio);
+
+#endif
+

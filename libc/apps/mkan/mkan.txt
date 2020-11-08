@@ -1,0 +1,100 @@
+#define NOGL
+//#define JTMPORT2UNIX TRUE  // FOR UNIX PORTING ONLY!
+ //#define USERINT
+//
+//      MKAN program (Make Animation)
+//      -----------------------------
+//
+//      IMPORTANT !! READ NOW !!
+//
+//
+// Description:
+//
+//      This program creates animation files from source images that
+//      are in 320x200 256 color greyscale format,
+//      saved in either PCX or BMP(Windows) file format.
+//      Result will be saved as 160x100 4 color, either in dithered 15 color
+//      or non-dithered 4 color. Dithered graphics takes more memory,
+//      of course.
+//      The animation files created by MKAN are usually used in my demos
+//      I've been doing for Commodore 64 since 1990 or something.
+//      Easiest way to produce animation files for MKAN is to
+//      create simple program that creates 320x200 256 greyscale effect on
+//      vga screen and save every frame to disk as BMP files with
+//      JTMOS/JTMCONV.H: function jtm_savecurrentscreentobmp2,
+//      jtm_savecurrentscreentobmp2 function is not suitable for this,
+//      because it forms the number of image in %1.4u format instead of
+//      %u, which decreases the max size of filename used for the source
+//      image to four marks, which(atleast in DOS mode) creates
+//      big problems to make suitable name for the PCX/BMP animation files.
+//
+// Future expansions:
+//
+//      I am planning to expand the capacibility of the animation creator
+//      from generating animations in 160x100 4c to max. 320x200 256c.
+//      All other future expansions will be made only if there is
+//      a absolutly need for that, like f.e. a demo production that
+//      needs animations compressor for 256c color mode or other.
+//
+// Shell example:
+//
+//      mkan clip animfile [options]
+//
+//      ^                  ^
+//      |                  |
+//      |                  This is a place for options.
+//      |                  Options available :
+//      |
+//      |
+//      |
+//      |                       #n0  <- Name format,
+//      |                               if you have animation files in :
+//      |                               clip0000,clip0001 format then
+//      |                               use #n1,
+//      |                               or if your program generates names
+//      |                               like clip0 clip1 clip2 ...
+//      |                               then use #n0 (DEFAULT!).
+//      |
+//      |
+//      |                       #gff
+//      |                         ^^ <- Background fill byte(hex$)
+//      |                               Default=0x00(BLACK)
+//      |                               Grey=0x55
+//      |                               LGrey=0xaa
+//      |                               White=0xff.
+//      |
+//      |                       #b0  <- Begin frame specification(default=0)
+//      |
+//      |                       #f0  <- Force size(default=0)
+//      |                               Set to 1 or 2 if you want to
+//      |                               force the animation file in smaller
+//      |                               size, notice:
+//      |                               This will make animation look very noisy!
+//      |
+//      |                       #d0  <- Dither ON(1) / Dither OFF(0)
+//      |
+//      |                       #m0  <- Color map maximize(default=0,off)
+//      |
+//      |
+//      |
+//      |
+//      \-- This shell script executes the MKAN with two arguments with
+//          following meaning :
+//
+//      "clip" -> Filename of source images,
+//                which'll be used when the animation creator program
+//                starts searching for source images :
+//
+//                clip0.bmp             clip0.pcx
+//                clip1.bmp     or      clip1.pcx
+//                clip2.bmp             clip2.pcx
+//                ...                   ...
+//
+//
+// New option:
+//
+// #lx   x=max. length in frames to convert
+//
+// #bx   x=the frame where converting begins
+//
+//

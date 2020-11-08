@@ -1,0 +1,25 @@
+NEWS
+----
+
+31.12.02: Added binary a tail string in every binary,
+helps EXE identification alot.
+
+
+
+Memory map for JTMOS applications
+---------------------------------
+
+1)
+
+0000 Application stack
+2000 Communication Area(ComA *)
+4000 Application binary code/data
+
+* Communication area is not implemented.
+
+2)
+
+Two major scripts that are being used are:
+
+buildutils.sh
+selectivebuild.sh

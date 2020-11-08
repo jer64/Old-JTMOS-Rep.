@@ -1,0 +1,53 @@
+
+Allocating common symbols
+Common symbol       size              file
+
+MALSTRU             0x8               test2.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD ../libc/stlibc.o
+LOAD test2.o
+
+.text           0x00010000       0xe7
+                0x00010000                appregionstart=.
+ *(.text)
+ .text          0x00010000       0x28 ../libc/stlibc.o
+                0x00010000                libc_startup
+ *fill*         0x00010028        0x8
+ .text          0x00010030       0xb7 test2.o
+                0x00010030                main
+                0x000100e7                etext=.
+                0x000100e7                _etext=.
+
+.data           0x000100e7       0x27
+ *(.data)
+ *fill*         0x000100e7        0x1
+ *(.rodata)
+ .rodata        0x000100e8       0x26 test2.o
+                0x0001010e                edata=.
+                0x0001010e                _edata=.
+
+.bss            0x0001010e        0xa
+ *(.bss)
+ *fill*         0x0001010e        0x2
+ *(COMMON)
+ COMMON         0x00010110        0x8 test2.o
+                                  0x0 (size before relaxing)
+                0x00010110                MALSTRU
+                0x00010118                end=.
+                0x00010118                _end=.
+                0x00010118                appregionend=.
+OUTPUT(test2.bin binary)
+
+.comment        0x00010118       0x5c
+ .comment       0x00010118       0x1f ../libc/stlibc.o
+ .comment       0x00010137       0x3d test2.o
+
+.note           0x00010118       0x14
+ .note          0x00010118       0x14 test2.o

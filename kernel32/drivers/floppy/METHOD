@@ -1,0 +1,19 @@
+NEW METHOD OF ACCESSING FLOPPY DISK DRIVE
+-----------------------------------------
+
+(C) 2002 by Jari Tuominen
+
+18*2 x 512 bytes will be read at once in track buffer.
+
+18*2 * 0
+18*2 * 1
+18*2 * 2
+18*2 * 3
+18*2 * 4
+18*2 * 5
+18*2 * 6
+18*2 * 7
+18*2 * 8
+...
+
+

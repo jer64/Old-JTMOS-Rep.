@@ -1,0 +1,20 @@
+Welcome to The JTMOS EDITOR.
+
+JTMOS editor is a full-screen editor which aims into producing
+a fully functional MS-DOS editor & PICO clone.
+
+JTMOS editor is an integrated part of the JTMOS squirrel file
+manager program.
+
+KEYS
+====
+
+Cursor up/down/left/right - moves your cursor.
+F1 - views this manual.
+CTRL+x - exits editor.
+F10 - exits editor.
+CTRL+o - saves your current work.
+F2 - saves your current work.
+
+You may freely type on the text editor screen.
+
