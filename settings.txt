@@ -1,0 +1,32 @@
+8TO1=../tools/8to1
+BIN2C=../tools/bin2c
+CC=gcc
+
+JTMDEF=-DJTMOSVERSION=0x0200 \
+-Ifs -Ifs/fat12 -Ifs/jtmfs
+
+CFLAGS3=-w -c \
+-O -march=pentiumpro -m32 $(JTMDEF)
+
+CFLAGS2=-w -c \
+-O2 -march=pentiumpro -m32 $(JTMDEF)
+
+CFLAGS=-c -w \
+-O2 -march=pentiumpro -m32 $(JTMDEF)
+
+TURBO=-w -c \
+-O2 -march=pentiumpro -m32 $(JTMDEF)
+
+# CFLAGS=-Wall -O2 -w -c
+AR=ar
+AS=as
+ASM=nasm
+ASMFLAGS=-f elf
+LD=ld  
+KERNELSTALDFLAGS=-o kernel32.bin --oformat binary \
+        -Map kernel32.map -Tkernel32.src \
+        -Ttext 0x10000  -m elf_i386
+
+KERNELDOSLDFLAGS=-o dosker32.bin --oformat binary \
+        -Map dosker32.map -Tdosker32.src \
+        -Ttext 0x20000 -m elf_i386

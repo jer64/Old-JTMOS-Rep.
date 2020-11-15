@@ -1,0 +1,100 @@
+
+FILE SYSTEM ACCESS INTERFACE FOR KFILESYS - DOCUMENTATION
+---------------------------------------------------------
+
+(C) 2002-2003 by Jari Tuominen
+
+NOTE: this information is partly obsolete due to radical
+changes in the cache system.
+E.g. DEVAPI cache does not anymore exist due to it's
+inefficiencity, instead drivers contain internal
+caches which are specifically optimized for access.
+
+1. HIGH LEVEL CACHE
+-------------------
+
+KFILESYS
+(CENTRAL FILE SYSTEM PROCESS)
+|
+|
+V
+FILEAPI (jtmfsAccess.c)
+|    \
+|     \
+V     |
+JTMFS |
+|  |  |
+|  V  V
+|  JTMFAT(CACHE)----
+|        \          \
+V         \__       |
+DIRDB        \      |
+(Directory    \     |
+cache system) |     V
+|            /    KFSCACHEHIGH
+|    /-------    /(Flushes FAT cache
+|    |          /  and DIRDB -dir cache)
+V    V         /
+DEVAPI <-------
+(BLOCK DEVICE ACCESS SYSTEM)
+
+
+2. LOW LEVEL CACHE
+------------------
+
+KFSCACHELOW
+(LOW LEVEL BLOCK CACHE)
+|
+|
+V
+Block Device Driver
+|
+|
+V
+MASS STORAGE DEVICE
+HARDWARE ACCESS GATEWAY
+(IDE CONTROLLER,
+FDC CONTROLLER, ETC.)
+|
+|
+V
+Physical device
+
+
+3. What are those files in this directory(kernel32/jtmfs)?
+----------------------------------------------------------
+
+FILE		      | DESCRIPTION
+------------------------------------------------------------
+jtmfat.c		JTMOS file allocation system
+jtmfs.c			JTMOS file system
+fileapi.c		Central file API
+fswalk.c		Dir walking functions
+fsfind.c		File finding functions
+fsadd.c			Directory entry adding functions
+fsaddblocks.c		Allocate more blocks on
+			file or directory
+fsdev.c			Functions that figure out
+			which device is currently
+			assigned to each of the processes
+
+JTMOS - HOW KERNEL'S DISK DATA FLUSHING WORKS
+---------------------------------------------
+
+L2 = Kernel's disk cache
+L1 = Driver's cache buffers
+
+FAT FLUSHER THREAD
+Write whole FAT to drive.
+* No flush is triggered at this point.
+
+CACHE FLUSHER THREAD
+1) L2 cache is flushed
+DEVAPI CACHE ENTRIES => WROTE ON BLOCK DEVICE DRIVER
+
+2) L1 cache if flushed
+DEVICE DRIVER'S OWN BUFFERS => PHYSICAL DISK
+
+
+
+
